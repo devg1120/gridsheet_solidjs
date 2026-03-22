@@ -1,0 +1,48 @@
+name: release
+on:
+  push:
+    branches:
+      - master
+      - fix/*
+
+jobs:
+  package-release:
+    # needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    name: npm upload
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: upload react-core
+        run: |
+          cd packages/react-core
+          pnpm install
+          pnpm build --mode development
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+          npm publish --access public || true
+
+      - name: upload preact-core
+        run: |
+          cd packages/preact-core
+          pnpm install
+          pnpm build
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+          npm publish --access public || true
+
+      - name: upload vue-core
+        run: |
+          cd packages/vue-core
+          pnpm install
+          pnpm build --mode development
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+          npm publish --access public || true

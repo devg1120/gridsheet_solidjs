@@ -1,0 +1,37 @@
+
+
+https://gridsheet.walkframe.com/getting-started/react
+
+https://gridsheet.walkframe.com/api-reference/props
+
+https://github.com/walkframe/gridsheet
+
+
+react-core/src/components/GridSheet.tsx:  const largeEditorRef = useRef<HTMLTextAreaElement>(null); //GUSA
+react-core/src/components/FormulaBar.tsx:          //onInput={handleInput} //GUSA
+react-core/src/components/Cell.tsx:  //operationStyle?: any; //GUSA
+react-core/src/types.ts:  default?: any;   //GUSA
+
+
+
+-----------------------------developed
+
+$ npm run dev
+
+http://127.0.0.1:3000/
+
+-----------------------------production
+$ npm run build
+
+$ tree dist/
+dist/
+├── assets
+│   ├── index-CpQZi0Zz.js
+│   └── index-DQ3P1g1z.css
+├── index.html
+└── vite.svg
+
+$  _start_httpd.sh
+
+http://127.0.0.1:3000/
+

@@ -1,0 +1,58 @@
+name: e2e
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  TZ: 'Asia/Tokyo'
+
+jobs:
+  run-e2e-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: cache1
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+          key: ${{ runner.os }}-${{ hashFiles('./pnpm-lock.yaml') }}
+
+      - name: cache2
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/storybook/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('./packages/storybook/pnpm-lock.yaml') }}
+
+      - name: install
+        run: |
+          pnpm install
+          npx playwright install --with-deps
+
+      - name: build storybook
+        run: |
+          cd packages/storybook
+          pnpm build
+
+      - name: server
+        run: |
+          python -m http.server 5233 --directory "${{ github.workspace }}/packages/storybook/storybook-static" &
+
+      - name: e2e test
+        run: pnpm e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-results
+          path: test-results

@@ -1,0 +1,40 @@
+{
+  "name": "@gridsheet/preact-core",
+  "version": "2.0.5",
+  "description": "Spreadsheet component for Preact",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "vite example",
+    "copy-types": "rsync -avm --include='*/' --include='*.d.ts' --exclude='*' ../react-core/dist/ ./dist/",
+    "append-preact": "echo '\nexport { h, render } from \"preact\";' >> dist/index.d.ts && cat exports.ts >> dist/index.d.ts",
+    "build": "rm -rf ./dist || true && vite build --mode development && pnpm copy-types && pnpm append-preact"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/walkframe/gridsheet.git"
+  },
+  "peerDependencies": {
+    "dayjs": "^1.11.13",
+    "preact": "^10.26.6"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.4",
+    "@types/react-dom": "^19.1.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.2",
+    "vite-plugin-dts": "^4.5.3",
+    "@preact/preset-vite": "^2.10.1"
+  },
+  "bugs": {
+    "url": "https://github.com/walkframe/gridsheet/issues"
+  },
+  "homepage": "https://gridsheet.walkframe.com/",
+  "files": [
+    "dist"
+  ],
+  "author": "righ",
+  "license": "Apache-2.0"
+}

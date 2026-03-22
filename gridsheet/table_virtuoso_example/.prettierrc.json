@@ -1,0 +1,7 @@
+{
+    "experimentalTernaries": true,
+    "printWidth": 120,
+    "tabWidth": 4,
+    "trailingComma": "all",
+    "singleAttributePerLine": true
+}

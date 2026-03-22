@@ -1,0 +1,8 @@
+
+case3
+react-core/src/components/FormulaBar.tsx
+#204           //onInput={handleInput}
+=>
+#204           onInput={handleInput}
+
+

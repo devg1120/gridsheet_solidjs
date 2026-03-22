@@ -1,0 +1,55 @@
+
+
+
+
+case20_2   cursor move  span skip
+     store/actions.ts
+
+case20_1  scan
+  memo化
+        ScrollHandle.tsx
+        FormulaBar.tsx
+
+
+case19_4
+   rechart renderring
+
+
+case3
+ ---- dev mode
+   npn run dev
+
+ ---- prod mode
+   npm run build
+   ./_start_httpd.sh
+
+
+case 4 
+  colspan & rowspan
+
+
+case 5
+    npm run build   > error
+
+case 6
+    npm run build   > ok
+
+case 8
+    freeze    
+
+case 9
+    npm run build   > ok
+   
+case 11
+    npm run build   > ok
+   
+case 12
+    fmt
+    fmt2
+
+case 12_comp
+    react compiler
+
+case14
+      split window
+

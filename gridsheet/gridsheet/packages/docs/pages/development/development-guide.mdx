@@ -1,0 +1,200 @@
+# Development Guide
+
+This guide covers the development workflow, tools, and best practices for contributing to GridSheet.
+
+## Development Setup
+
+### Prerequisites
+
+- **Node.js**: Version 24.1.0
+- **pnpm**: For package management
+- **Git**: For version control
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-org/gridsheet.git
+cd gridsheet
+
+# Install dependencies
+pnpm install
+```
+
+### Development Scripts
+
+```bash
+# Start Storybook development server
+pnpm dev
+
+# Start documentation development server
+pnpm doc
+
+# Run unit tests
+pnpm test
+
+# Run e2e tests (uses server)
+pnpm e2e
+
+# Run linting and apply prettier
+pnpm lint:fix
+```
+
+## Testing Strategy
+
+### Testing Policy
+
+GridSheet follows a specific testing strategy:
+
+- **Formula Functions**: When adding new formula functions, unit tests are required
+- **Other Features**: All other features are covered by e2e tests
+- **Component Behavior**: Use e2e tests to verify component interactions and user workflows
+- **Integration**: E2e tests ensure proper integration between components
+
+### E2E Test Example
+
+```typescript
+import { test, expect } from '@playwright/test';
+import { ctrl, drag, paste } from './utils';
+
+test('time + delta, time + number(days)', async ({ page }) => {
+  await page.goto('http://localhost:5233/iframe.html?id=basic-simple--sheet&viewMode=story');
+  const a4 = page.locator("[data-address='A4']");
+  const b4 = page.locator("[data-address='B4']");
+  const c4 = page.locator("[data-address='C4']");
+  const a5 = page.locator("[data-address='A5']");
+
+  expect(await a4.locator('.gs-cell-rendered').textContent()).toBe('2022-03-05 12:34:56');
+  expect(await b4.locator('.gs-cell-rendered').textContent()).toBe('11:11:11');
+  expect(await c4.locator('.gs-cell-rendered').textContent()).toBe('2022-03-05 23:46:07');
+  expect(await a5.locator('.gs-cell-rendered').textContent()).toBe('2022-03-04 23:34:56');
+});
+```
+
+**Available Utilities:**
+
+The E2E test suite provides utility functions for common operations:
+
+- **`ctrl`**: Helper for Ctrl key combinations
+- **`drag`**: Helper for drag and drop operations  
+- **`paste`**: Helper for paste operations
+
+These utilities are available in `e2e/utils.ts` and can be imported to simplify test writing.
+
+## Formula Functions
+
+### Creating Custom Formula Functions
+
+When adding new formula functions to GridSheet, follow these guidelines:
+
+#### Google Spreadsheet Compatibility
+
+When adding new functions, prioritize those that are also supported by Google Spreadsheet:
+
+- **Target Functions**: Focus on functions that exist in Google Sheets
+- **Specification Matching**: Follow Google Sheets' function specifications and behavior
+- **Parameter Compatibility**: Match argument types, order, and validation rules
+- **Return Value Consistency**: Ensure return values match Google Sheets' behavior
+- **Error Handling**: Implement the same error conditions and messages
+
+#### BaseFunction Inheritance
+
+All custom formula functions must extend the `BaseFunction` class:
+
+```typescript
+import { BaseFunction, ensureString } from '@gridsheet/react-core';
+
+class CustomFunction extends BaseFunction {
+  // Required properties for documentation
+  example = 'CUSTOM_FUNCTION("value", 123)';
+  helpText = ['Performs a custom operation on the input values'];
+  helpArgs = [
+    { name: 'value', description: 'The input value to process' },
+    { name: 'number', description: 'A numeric parameter' }
+  ];
+
+  // Required validation method
+  protected validate() {
+    if (this.bareArgs.length !== 2) {
+      throw new Error('CUSTOM_FUNCTION requires exactly 2 arguments');
+    }
+    // Ensure proper types
+    this.bareArgs[0] = ensureString(this.bareArgs[0]);
+    this.bareArgs[1] = Number(this.bareArgs[1]);
+  }
+
+  // Required main implementation
+  protected main(value: string, number: number) {
+    // Your custom logic here
+    return `Processed: ${value} with ${number}`;
+  }
+}
+```
+
+#### Documentation Properties
+
+Every formula function must include these properties for future help system integration:
+
+- **`example`**: Shows how to use the function in a formula
+- **`helpText`**: Array of description strings explaining what the function does
+- **`helpArgs`**: Array of argument descriptions with name and description
+
+#### Function Registration
+
+Functions must be registered in `formula/mapping.ts`:
+
+```typescript
+// formula/mapping.ts
+import { CustomFunction } from './functions/CustomFunction';
+
+export const functions = {
+  // ... existing functions
+  CUSTOM_FUNCTION: CustomFunction,
+};
+```
+
+## Documentation
+
+### API Documentation
+
+```bash
+# Start documentation development server
+pnpm doc
+
+# Build documentation
+pnpm build:docs
+```
+
+### Storybook
+
+```bash
+# Start Storybook development server
+pnpm dev
+
+# Build Storybook
+pnpm build:storybook
+```
+
+## Contributing
+
+### Pull Request Process
+
+1. **Create Feature Branch**: `git checkout -b feature/new-feature`
+2. **Make Changes**: Implement your feature
+3. **Run Tests**: Ensure all tests pass (`pnpm test`)
+4. **Update Documentation**: Update relevant docs
+5. **Submit PR**: Create pull request with description
+
+### Code Review Checklist
+
+- [ ] Code follows style guidelines
+- [ ] Tests are included and passing
+- [ ] Documentation is updated
+- [ ] No breaking changes (or documented)
+- [ ] Performance impact considered
+
+### Release Process
+
+1. **Version Bump**: Update version in package.json
+2. **Build**: Run full build and test suite
+3. **Publish**: Publish to npm

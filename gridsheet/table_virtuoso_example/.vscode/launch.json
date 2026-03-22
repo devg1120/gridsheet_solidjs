@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "react debug: Launch Chrome",
+            "url": "http://localhost:5174",
+            "webRoot": "${workspaceFolder}/src",
+            "skipFiles": ["${workspaceFolder}/node_modules/**/*.*", "<node_internals>/**/*.*", "/node_modules/**/*.*"]
+        },
+        {
+            "type": "node",
+            "name": "node.js Debug Current File",
+            "request": "launch",
+            "program": "${file}"
+        }
+    ]
+}

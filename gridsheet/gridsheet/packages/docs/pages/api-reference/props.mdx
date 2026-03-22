@@ -1,0 +1,240 @@
+# GridSheet Props
+
+The GridSheet component accepts the following props to configure its behavior and appearance.
+
+## Props Overview
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `initialCells` | `CellsByAddressType` | Yes | Initial cell data and configuration |
+| `sheetName` | `string` | No | Unique identifier for the sheet |
+| `hub` | `HubType` | No | Shared hub for cross-sheet communication |
+| `connector` | `Connector` | No | Reference to access table and store managers |
+| `options` | `OptionsType` | No | Configuration options for sheet behavior |
+| `className` | `string` | No | CSS class name for styling |
+| `style` | `CSSProperties` | No | Inline styles for the component |
+
+## Initial Cells
+
+The `initialCells` prop defines the starting data and configuration for your spreadsheet. This is where you specify cell values, styles, renderers, policies, and other cell-specific settings.
+
+**Important**: This is the initial value given to the sheet. Changes made after initialization will not be reflected, so please be careful.
+
+### Address Format
+
+The format uses cell addresses as keys for cell configuration objects. For example, to set the text color of D3 to green, use `{D3: {style: {color: "#00FF00"}}}`.
+
+### Default Configuration
+
+The `default` key applies configuration to all cells in the spreadsheet. This is useful for setting global defaults like width, height, or styles.
+
+```tsx
+const initialCells = {
+  default: { 
+    width: 100, 
+    height: 30,
+    style: { fontSize: '14px' }
+  },
+  'A1': { value: 'Hello World' },
+  'B2': { value: 100 },
+};
+```
+
+### Header Configuration
+
+Header dimensions are configured using the `0` key for both header height and header width:
+
+```tsx
+const initialCells = {
+  // Header height and width (row 0)
+  '0': {
+    height: 60,  // Header height
+    width: 80,   // Header width
+  },
+  // Other cells...
+  'A1': { value: 'Hello World' },
+};
+```
+
+**Note**: Header width is set on row `0`, not on column letters. Column letters like `'A': { width: 80 }` only affect the width of that specific column, not the header width.
+
+### Column and Row Specifications
+
+For columns and rows, you can specify using only one side of the address:
+- **Columns**: Use just the column letter (e.g., `D` for column D)
+- **Rows**: Use just the row number (e.g., `3` for row 3)
+
+### Column/Row Specific Properties
+
+Some properties are only valid for columns or rows:
+
+| Property | Valid For | Description |
+|----------|-----------|-------------|
+| `width` | Columns only | Column width in pixels |
+| `height` | Rows only | Row height in pixels |
+| `labeler` | Both | Custom labeler for headers |
+
+**Note**: If you specify `width` or `height` on a cell address like `D3`, it will be ignored.
+
+### Cell Configuration
+
+Each cell can be configured with the following properties:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `value` | `T` | The cell's content (text, numbers, formulas). You can parse user input and store arbitrary values, but avoid non-serializable objects like class instances. Cell values are designed to be serializable (except for system field). |
+| `style` | `CSSProperties` | CSS properties for appearance |
+| `justifyContent` | `CSSProperties['justifyContent']` | Horizontal alignment within the cell |
+| `alignItems` | `CSSProperties['alignItems']` | Vertical alignment within the cell |
+| `labeler` | `string` | Key of a labeler registered in the hub |
+| `width` | `Width` | Cell width in pixels |
+| `height` | `Height` | Cell height in pixels |
+| `renderer` | `string` | Key of a renderer registered in the hub |
+| `parser` | `string` | Key of a parser registered in the hub |
+| `policy` | `string` | Key of a policy registered in the hub |
+| `custom` | `Custom` | Custom data for the cell. You can store any arbitrary data here for your application's needs |
+| `disableFormula` | `boolean` | Disable formula evaluation for this cell |
+| `prevention` | `OperationType` | Operation restrictions for the cell |
+
+**Important Notes:**
+- **Serialization**: Cell values (except `system` field) are designed to be serializable. Avoid storing non-serializable objects like class instances.
+- **System Field**: The `system` field contains values used by the system to display correct values. Do not modify this field manually.
+
+### Example Usage
+
+```tsx
+const initialCells = {
+  // Default configuration for all cells
+  default: { 
+    width: 100, 
+    height: 30,
+    style: { fontSize: '14px' }
+  },
+  
+  // Header configuration
+  '0': { 
+    height: 60,  // Header height
+    width: 80,   // Header width
+  },
+  
+  // Individual cell configuration
+  'A1': { value: 'Hello World', style: { color: '#FF0000' } },
+  'B2': { value: 100, renderer: 'currency' },
+  'C3': { value: 'Active', policy: 'status' },
+  
+  // Column configuration
+  'A': { width: 150, labeler: 'custom' },
+  'B': { width: 200 },
+  
+  // Row configuration
+  '1': { height: 40 },
+  '2': { height: 50, labeler: 'custom' },
+};
+
+<GridSheet initialCells={initialCells} />
+```
+
+### Hub-Registered Components
+
+The `labeler`, `renderer`, `parser`, and `policy` properties reference components that are registered in the hub by their string keys:
+
+- **Labeler**: References a labeler function registered in `hub.labelers`
+- **Renderer**: References a renderer instance registered in `hub.renderers`
+- **Parser**: References a parser instance registered in `hub.parsers`
+- **Policy**: References a policy instance registered in `hub.policies`
+
+### Example Usage
+
+```tsx
+const hub = useHub({
+  renderers: {
+    currency: new Renderer({ mixins: [CurrencyRendererMixin] }),
+    percentage: new Renderer({ mixins: [PercentageRendererMixin] }),
+  },
+  policies: {
+    status: new Policy({ mixins: [StatusPolicyMixin] }),
+  },
+  labelers: {
+    custom: (n: number) => `Row ${n}`,
+  },
+});
+
+// In initialCells configuration
+{
+  'A1': {
+    value: 1000,
+    renderer: 'currency',  // References hub.renderers.currency
+    style: { backgroundColor: '#f0f9ff' },
+  },
+  'B1': {
+    value: 'Active',
+    policy: 'status',      // References hub.policies.status
+  },
+  'C1': {
+    labeler: 'custom',     // References hub.labelers.custom
+  },
+}
+```
+
+**Note**: The `system` property is managed internally by GridSheet and should not be specified manually.
+
+## Sheet Name
+
+A unique identifier for the sheet that enables cross-sheet references and communication. When multiple sheets share a hub, the sheet name is used to distinguish between them for formula calculations and data sharing.
+
+## Hub
+
+The hub enables communication between multiple GridSheet instances. Use the `useHub` hook to create a shared hub that allows sheets to reference each other's data in formulas.
+
+### Hub Configuration
+
+The `useHub` hook accepts configuration options that are shared across all sheets using the same hub:
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `historyLimit` | `number` | Maximum number of history entries for undo/redo |
+| `additionalFunctions` | `FunctionMapping` | Custom formula functions |
+| `renderers` | `{ [rendererName: string]: RendererType }` | Custom cell renderers |
+| `parsers` | `{ [parserName: string]: ParserType }` | Custom cell parsers |
+| `labelers` | `{ [labelerName: string]: (n: number) => string }` | Custom header labelers |
+| `policies` | `{ [policyName: string]: PolicyType }` | Custom cell policies |
+| `onSave` | `FeedbackType` | Callback when cell data is saved |
+| `onChange` | `FeedbackType` | Callback when cell data changes |
+| `onEdit` | `(args: { table: UserTable }) => void` | Callback when cell is being edited |
+| `onRemoveRows` | `(args: { table: UserTable; ys: number[] }) => void` | Callback when rows are removed from the spreadsheet |
+| `onRemoveCols` | `(args: { table: UserTable; xs: number[] }) => void` | Callback when columns are removed from the spreadsheet |
+| `onInsertRows` | `(args: { table: UserTable; y: number; numRows: number }) => void` | Callback when rows are inserted into the spreadsheet |
+| `onInsertCols` | `(args: { table: UserTable; x: number; numCols: number }) => void` | Callback when columns are inserted into the spreadsheet |
+| `onSelect` | `FeedbackType` | Callback when cell selection changes |
+| `onKeyUp` | `(args: { e: EditorEvent, points: CursorStateType }) => void` | Callback when a key is pressed in the cell editor |
+| `onInit` | `(args: { table: UserTable }) => void` | Callback when the table is initialized |
+
+### Event Handler Table Identification
+
+When multiple sheets share the same hub, event handlers receive a `table` parameter that contains the `UserTable` instance. You can use `table.sheetName` to identify which sheet triggered the event:
+
+```tsx
+const hub = useHub({
+  onChange: ({ table, points }) => {
+    if (table.sheetName === 'Sales') {
+      console.log('Sales sheet data changed:', points);
+    } else if (table.sheetName === 'Inventory') {
+      console.log('Inventory sheet data changed:', points);
+    }
+  },
+  onRemoveRows: ({ table, ys }) => {
+    console.log(`Rows removed from ${table.sheetName}:`, ys);
+  },
+  onInsertCols: ({ table, x, numCols }) => {
+    console.log(`Inserted ${numCols} columns at position ${x} in ${table.sheetName}`);
+  },
+  onKeyUp: ({ e, points }) => {
+    console.log(`Key pressed: ${e.key} at position:`, points);
+  },
+  onInit: ({ table }) => {
+    console.log(`Table initialized: ${table.sheetName}`);
+  },
+});
+```
+
+**Important**: Always use `table.sheetName` for conditional logic when multiple sheets share the same hub to ensure proper event handling and data management.

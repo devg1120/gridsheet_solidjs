@@ -1,0 +1,31 @@
+import type { RenderProps } from "./core";
+/*
+export const ChartTest3RendererMixin: RendererMixinType = {
+  string({ value, cell }): any {
+    return `r3----${value}---`;
+  },
+};
+*/
+
+        //type="checkbox"
+
+//export const ChartTest3RendererMixin: RendererMixinType = {
+export const ChartTest3RendererMixin  = {
+  bool({ value, sync, table, point }: RenderProps<boolean>): any {
+    return (
+      <input
+        type="checkbox"
+        checked={value}
+        onChange={(e) => {
+          if (sync) {
+            sync(
+              table.write({ point, value: e.currentTarget.checked.toString() }),
+            );
+          }
+          e.currentTarget.blur();
+        }}
+      />
+    );
+  },
+};
+

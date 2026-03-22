@@ -1,0 +1,61 @@
+import type { RenderProps } from "./core";
+import StudyChart from './chart_components/StudyChart';
+//import TinyBarChart from './chart_components/TinyBarChart';
+import BarChartComponent from './chart_components/BarChartComponent';
+import PieChartComponent from './chart_components/PieChartComponent';
+import RadarChartComponent from './chart_components/RadarChartComponent';
+
+import { useState } from 'react';
+
+type Dict = {
+   name: string,
+   students: number,
+}
+type Value = {
+     type: string,
+     data: Array<Dict>
+}
+export const ChartTest5RendererMixin  = {
+  //array({ value, sync, table, point }: RenderProps<array>): any {
+  object({ value, sync, table, point }: RenderProps<Value>): any {
+
+     let width  = 0;
+     let height = 0;  
+     let cell =table.getCellByPoint(point);
+     if (cell === undefined) { return "Error" }
+     for (let i = 0; i < (cell.colsize ?? 1); i++) {
+          width += table.getCellByPoint({ y:0, x:point.x + i})?.width ?? 0;
+     }
+     for (let i = 0; i < (cell.rowsize ?? 1); i++) {
+          height += table.getCellByPoint({ y:point.y + i, x:0})?.height ?? 0;
+     }
+
+    if ( value.type == "study_chart" ) {
+       return (
+           <StudyChart data={value.data} width={width} height={height} />
+       );
+    } else if ( value.type == "bar_chart" ) {
+       return (
+           <BarChartComponent data={value.data} width={width} height={height} />
+       );
+    } else if ( value.type == "pie_chart" ) {
+       return (
+           <PieChartComponent table={table} data={value.data} width={width} height={height} />
+       );
+    } else if ( value.type == "radar_chart" ) {
+    /*
+         let id = table.getId({x:8,y:13});
+         let address = table.getAddressById(id);
+         console.log(id, address);
+         console.log(table.wire.data[id].value);
+	 */
+         //const { cdata, setCdata } = useState(table.wire.data[id].value);
+         //console.log(cdata);
+         //console.log(value.data[0]);
+	 //value.data[0].A = cdata;
+       return (
+           <RadarChartComponent table={table} data={value.data} width={width} height={height} />
+       );
+    }
+  },
+};
