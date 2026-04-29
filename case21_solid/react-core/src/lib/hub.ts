@@ -185,8 +185,13 @@ export const createHub = (props: WireProps = {}): HubType => {
 };
 
 export const useHub = (props: WireProps = {}) => {
-    const [hub, setHub] = createSignal<HubType>(() => createHub(props));
-    const { wire } = hub();
+    //const [hub, setHub] = createSignal<HubType>(() => createHub(props));
+    const hub_ = createHub(props);
+    const [hub, setHub] = createSignal<HubType>(hub_);
+    //console.log(hub_);
+    //console.log(hub());
+    const wire = hub().wire
+
     wire.transmit = (patch?: TransmitProps) => {
         Object.assign(wire, patch);
         if (!wire.ready) {
@@ -194,11 +199,13 @@ export const useHub = (props: WireProps = {}) => {
         }
         requestAnimationFrame(() => setHub({ wire }));
     };
+    
     createEffect(on(
         () => [props],
         () => {
             Object.assign(wire, props);
         }
     ));
+    
     return hub();
 };

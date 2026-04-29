@@ -11,7 +11,8 @@ type StoreObserverProps = OptionsType & {
 };
 
 export const createConnector = () => createRef<Connector | null>();
-export const useConnector = () => useRef<Connector | null>(null);
+//export const useConnector = () => useRef<Connector | null>(null);
+export const useConnector = () => null;
 export const StoreObserver: FC<StoreObserverProps> = ({
     sheetName,
     sheetHeight,

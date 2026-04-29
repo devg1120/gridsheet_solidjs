@@ -20,7 +20,8 @@ import { onMount, createEffect, on, createSignal, mergeProps } from "solid-js";
 import onMountWithCleaning from "@suid/system/onMountWithCleaning";
 
 export const createConnector = () => createRef<Connector | null>();
-export const useConnector = () => useRef<Connector | null>(null);
+//export const useConnector = () => useRef<Connector | null>(null);
+export const useConnector = () =>   null;
 
 export function GridSheet(params) {
     const { sheetResize, showFormulaBar = true, mode = "light" } = params.options;
@@ -212,22 +213,16 @@ export function GridSheet(params) {
                     class={`gs-main ${params.className || ""}`}
                     ref={mainRef}
                     style={mergeProps({
-                        get maxWidth() { return (store.tableReactive.current?.totalWidth || 0) + 2 },
-                        get maxHeight() { return (store.tableReactive.current?.totalHeight || 0) + 2 },
+            maxWidth: (store.tableReactive?.totalWidth || 0) + 2,
+            maxHeight: (store.tableReactive?.totalHeight || 0) + 2,
                         overflow: "auto",
                         resize: sheetResize
                     }, () => params.style)}
                 >
                     <Editor mode={mode} />
                     <Tabular />
-                    <StoreObserver
-                        {...mergeProps(() => params.options, {
-                            get sheetHeight() { return sheetHeight() },
-                            get sheetWidth() { return sheetWidth() },
-                            get sheetName() { return params.sheetName },
-                            connector: connector
-                        })}
-                    />
+	              <StoreObserver {...{ ...options, sheetHeight, sheetWidth, sheetName, connector }} />
+
                     <ContextMenu />
                     <Resizer />
                     <Emitter />

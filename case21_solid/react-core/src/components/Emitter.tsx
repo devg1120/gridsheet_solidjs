@@ -1,11 +1,12 @@
 import { Context } from "../store";
+import { createEffect } from "solid-js";
 
 export const Emitter: FC = () => {
     const { store } = useContext(Context);
     const { choosing: pointing, selectingZone: zone, tableReactive } = store;
     const table = tableReactive.current;
 
-    useEffect(() => {
+    createEffect(() => {
         if (table?.isInitialized && table.wire.onChange) {
             table.wire.onChange({
                 table,
@@ -18,7 +19,7 @@ export const Emitter: FC = () => {
         }
     }, [tableReactive]);
 
-    useEffect(() => {
+    createEffect(() => {
         if (table && table.wire.onSelect) {
             table.wire.onSelect({
                 table,

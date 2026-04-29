@@ -15,7 +15,8 @@ type Props = {
     isFreeze: boolean;
 };
 
-export const HeaderCellLeft: FC<Props> = memo(({ y, isFreeze }) => {
+//export const HeaderCellLeft: FC<Props> = memo(({ y, isFreeze }) => {
+export const HeaderCellLeft  = ({ y, isFreeze }) => {
     const rowId = `${y2r(y)}`;
     const { store, dispatch } = useContext(Context);
 
@@ -189,8 +190,7 @@ export const HeaderCellLeft: FC<Props> = memo(({ y, isFreeze }) => {
             id={id}
             data-y={y}
             class={`gs-th gs-th-left header_freeze_x ${choosing.y === y ? "gs-choosing" : ""} ${between({
-                get start() { return selectingZone.startY },
-                get end() { return selectingZone.endY }
+		 start: selectingZone.startY, end: selectingZone.endY 
             }, y)
                     ? leftHeaderSelecting
                         ? "gs-th-selecting"
@@ -209,16 +209,13 @@ export const HeaderCellLeft: FC<Props> = memo(({ y, isFreeze }) => {
             >
                 <div
                     class="gs-th-inner"
-                    style={{
-                        get width() { return table.headerWidth },
-                        position: "relative"
-                    }}
+		    style={{ width: table.headerWidth, position: 'relative' }}
                 >
                     <ScrollHandle
-                        style={{
-                            position: "absolute",
-                            get zIndex() { return leftHeaderSelecting ? -1 : 1 }
-                        }}
+            style={{
+              position: 'absolute',
+              zIndex: leftHeaderSelecting ? -1 : 1,
+            }}
                         horizontal={-1}
                     />
                     {table.getLabel(row?.labeler, y) ?? rowId}
@@ -230,7 +227,8 @@ export const HeaderCellLeft: FC<Props> = memo(({ y, isFreeze }) => {
                   gs-resizer
                   ${prevention.hasOperation(row?.prevention, prevention.Resize) ? "gs-protected" : ""}
                   ${dragging ? "gs-hidden" : ""}`}
-                                    style={{ get width() { return table.headerWidth } }}
+				                style={{ width: table.headerWidth }}
+
                                     onMouseDown={handleResizeMouseDown}
                                 ></div>
                             )
@@ -241,4 +239,5 @@ export const HeaderCellLeft: FC<Props> = memo(({ y, isFreeze }) => {
             </div>
         </th>
     );
-});
+//});
+};

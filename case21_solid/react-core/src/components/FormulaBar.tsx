@@ -11,8 +11,8 @@ type FormulaBarProps = {
     ready: boolean;
 };
 
-//export const FormulaBar = ({ ready }: FormulaBarProps) => {
-export const FormulaBar = memo<FormulaBarProps>(({ ready }: FormulaBarProps) => {
+export const FormulaBar = ({ ready }: FormulaBarProps) => {
+//export const FormulaBar = memo<FormulaBarProps>(({ ready }: FormulaBarProps) => {
     const { store, dispatch } = useContext(Context);
     const [before, setBefore] = createSignal("");
     const {
@@ -163,7 +163,7 @@ export const FormulaBar = memo<FormulaBarProps>(({ ready }: FormulaBarProps) => 
             return false;
         }
 
-    const style: React.CSSProperties = ready ? {} : { visibility: "hidden" };
+    //const style: React.CSSProperties = ready ? {} : { visibility: "hidden" };
     if (!table) {
         return (
             <label class="gs-formula-bar gs-hidden" style={style}>
@@ -175,12 +175,15 @@ export const FormulaBar = memo<FormulaBarProps>(({ ready }: FormulaBarProps) => 
             </label>
         );
     }
+//    return (<></>)
+
     return (
         <label
             class="gs-formula-bar"
             data-sheet-id={store.sheetId}
             style={style}
         >
+
             <ScrollHandle
                 style={{
                     position: "absolute",
@@ -193,16 +196,19 @@ export const FormulaBar = memo<FormulaBarProps>(({ ready }: FormulaBarProps) => 
             <div class="gs-selecting-address">{address}</div>
             <div class="gs-fx">Fx</div>
             <div class="gs-formula-bar-editor-inner">
+
                 <div
                     class="gs-editor-hl"
                     ref={hlRef}
                     style={{
-                        get height() { return largeEditorRef.current?.clientHeight },
+	                height: largeEditorRef.clientHeight,
+
                         width: "100%"
                     }}
                 >
                     {cell?.disableFormula ? inputting : editorStyle(inputting)}
                 </div>
+
                 <textarea
                     name="gs-formula-bar-editor"
                     data-sheet-id={store.sheetId}
@@ -219,8 +225,11 @@ export const FormulaBar = memo<FormulaBarProps>(({ ready }: FormulaBarProps) => 
                     onKeyUp={updateScroll}
                     onScroll={updateScroll}
                 ></textarea>
+
             </div>
+
         </label>
     );
-    //};
-});
+
+   };
+//});

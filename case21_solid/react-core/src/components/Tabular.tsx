@@ -31,7 +31,8 @@ export const Tabular = () => {
 
     const table = tableReactive.current;
 
-    const tableRef = useRef<HTMLTableElement>(null);
+    //const tableRef = useRef<HTMLTableElement>(null);
+    const tableRef = null;
 
     const [virtualized, setVirtualized] = createSignal<Virtualization | null>(null);
 
@@ -489,8 +490,8 @@ export const Tabular = () => {
             <div
                 class="gs-tabular"
                 style={{
-                    get width() { return sheetWidth === -1 ? undefined : sheetWidth },
-                    get height() { return sheetHeight === -1 ? undefined : sheetHeight }
+          width: sheetWidth === -1 ? undefined : sheetWidth,
+          height: sheetHeight === -1 ? undefined : sheetHeight,
                 }}
                 ref={tabularRef}
                 onMouseMove={handleMouseMove}
@@ -499,20 +500,19 @@ export const Tabular = () => {
                 <div
                     class={"gs-tabular-inner"}
                     style={{
-                        get width() { return table.totalWidth + 1 },
-                        get height() { return table.totalHeight + 1 }
+            width: table.totalWidth + 1,
+            height: table.totalHeight + 1,
                     }}
                 >
                     <table ref={tableRef} class={`gs-table`}>
-                        <thead class="gs-thead" style={{ get height() { return table.headerHeight } }}>
+                        <thead class="gs-thead" style={{ height: table.headerHeight  }}>
                             <tr class="gs-row" >
                                 <th
                                     id="CR"
                                     class="gs-th gs-th-left gs-th-top header_freeze_x"
                                     style={{
                                         position: "sticky",
-                                        get width() { return table.headerWidth },
-                                        get height() { return table.headerHeight },
+ width: table.headerWidth, height: table.headerHeight,
                                         zIndex: 200
                                     }}
                                     onClick={handleSelectAllClick}
@@ -533,7 +533,8 @@ export const Tabular = () => {
 
                                 <th
                                     class="gs-adjuster gs-adjuster-horizontal gs-adjuster-horizontal-left"
-                                    style={{ get width() { return virtualized()?.adjuster?.left ?? 1 } }}
+                  style={{ width: virtualized?.adjuster?.left ?? 1}}
+
                                 ></th>
                                 {/*
                 {virtualized?.xs?.map?.((x) => <HeaderCellTop x={x} key={x} />)}
@@ -548,7 +549,8 @@ export const Tabular = () => {
 
                                 <th
                                     class="gs-adjuster gs-adjuster-horizontal gs-adjuster-horizontal-right"
-                                    style={{ get width() { return virtualized()?.adjuster?.right } }}
+                  style={{ width: virtualized?.adjuster?.right }}
+
                                 ></th>
                             </tr>
                         </thead>
@@ -557,7 +559,7 @@ export const Tabular = () => {
                             <tr class="gs-row">
                                 <th
                                     class={`gs-adjuster gs-adjuster-horizontal gs-adjuster-vertical`}
-                                    style={{ get height() { return virtualized()?.adjuster?.top ?? 1 } }}
+                  style={{ width: virtualized?.adjuster?.top ?? 1}}
                                 ></th>
                                 <td class="gs-adjuster gs-adjuster-vertical"></td>
 

@@ -10,13 +10,13 @@ import { COLOR_PALETTE } from "../lib/palette";
 import { EditorEventWithNativeEvent, ModeType } from "../types";
 import { Fixed } from "./Fixed";
 import { parseHTML, parseText } from "../lib/paste";
-import { createSignal, createEffect } from "solid-js";
+import { Component, createSignal, createEffect } from "solid-js";
 
 type Props = {
     mode: ModeType;
 };
 
-export const Editor: FC<Props> = ({ mode }: Props) => {
+export const Editor: Component<Props> = ({ mode }: Props) => {
     const { store, dispatch } = useContext(Context);
     const [selected, setSelected] = createSignal(0);
     const [shiftKey, setShiftKey] = createSignal(false);
@@ -151,7 +151,7 @@ export const Editor: FC<Props> = ({ mode }: Props) => {
         setBefore(valueString);
         dispatch(setInputting(valueString));
         resetInput(editorRef.current, table, choosing);
-    };
+    });
 
     const { y: top, x: left, height, width } = editorRect;
 
@@ -582,10 +582,11 @@ export const Editor: FC<Props> = ({ mode }: Props) => {
             <div class="gs-editor-inner" style={{ width: width }}>
                 <pre
                     class="gs-editor-hl"
-                    style={{
-                        get height() { return editorRef.current?.scrollHeight },
-                        get width() { return (editorRef.current?.scrollWidth ?? 0) - 4 }
-                    }}
+         style={{
+            //...cell?.style,
+            height: editorRef.current?.scrollHeight,
+            width: (editorRef.current?.scrollWidth ?? 0) - 4,
+          }}
                 >
                     {cell?.disableFormula ? inputting : editorStyle(inputting)}
                 </pre>
@@ -614,7 +615,7 @@ export const Editor: FC<Props> = ({ mode }: Props) => {
             </div>
             <ul
                 class="gs-editor-options"
-                style={{ get marginTop() { return editorRef.current?.scrollHeight } }}
+		style={{ marginTop: editorRef.current?.scrollHeight }}
             >
                 {filteredOptions.map((option, i) => (
                     <li
@@ -630,6 +631,7 @@ export const Editor: FC<Props> = ({ mode }: Props) => {
 };
 
 // Memoized token span component to prevent unnecessary re-renders
+/*
 const TokenSpan = memo<{
     token: any;
     tokenKey: string;
@@ -656,7 +658,18 @@ const TokenSpan = memo<{
         );
     },
 );
-
+*/
+const TokenSpan = 
+    ({ token, tokenKey, color, className }) => {
+        return (
+            <span
+                style={color ? { color: color } : undefined}
+                class={className}
+            >
+                {token.stringify()}
+            </span>
+        );
+    };
 export const editorStyle = (text: string) => {
     if (text[0] !== "=") {
         return <>{text}</>;

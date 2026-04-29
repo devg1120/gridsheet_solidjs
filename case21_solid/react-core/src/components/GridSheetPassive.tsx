@@ -17,9 +17,11 @@ import { SearchBar } from "./SearchBar";
 import { useHub } from "../lib/hub";
 import { ScrollHandle } from "./ScrollHandle";
 import { onMount, createSignal, mergeProps } from "solid-js";
+import { createStore } from "solid-js/store";
 
 export const createConnector = () => createRef<Connector | null>();
-export const useConnector = () => useRef<Connector | null>(null);
+//export const useConnector = () => useRef<Connector | null>(null);
+export const useConnector = () => null;
 
 export function GridSheetPassive(params) {
 
@@ -31,12 +33,12 @@ export function GridSheetPassive(params) {
     //const largeEditorRef = useRef<HTMLTextAreaElement>(null); //GUSA
     //const tabularRef = useRef<HTMLDivElement>(null);
 
-    const rootRef = null;
-    const mainRef = null;
-    const searchInputRef = null;
-    const editorRef = null;
-    const largeEditorRef = null; //GUSA
-    const tabularRef = null;
+    let rootRef = null;
+    let mainRef = null;
+    let searchInputRef = null;
+    let editorRef = null;
+    let largeEditorRef = null; //GUSA
+    let tabularRef = null;
 
     const internalConnector = useConnector();
     const connector = params.connector ?? internalConnector;
@@ -48,15 +50,17 @@ export function GridSheetPassive(params) {
 
     // useRef to manage sheetId and avoid Strict Mode issues
     //const sheetIdRef = useRef<number | null>(null);
-    const sheetIdRef = null;
-    if (sheetIdRef.current === null) {
-        sheetIdRef.current = ++hub.wire.sheetHead;
-    }
-    const sheetId = sheetIdRef.current;
+    //if (sheetIdRef === null) {                                        //PeD
+    //    sheetIdRef = ++hub.wire.sheetHead;
+    //}
+
+    const sheetIdRef = 0;
+    const sheetId = sheetIdRef;
+
 
     // Initialize tableReactive
     //const tableReactive = useRef<Table | null>(null);
-    const tableReactive = null;
+    let  tableReactive = null;
 
     const [initialState] = createSignal<StoreType>(() => {
         if (!params.sheetName) {
@@ -86,7 +90,9 @@ export function GridSheetPassive(params) {
         hub.wire.onInit?.({ table: params.table });
 
         //table.setTotalSize();
-        tableReactive.current = (params.table as Table);
+        //tableReactive.current = (params.table as Table);
+        //tableReactive = (params.table as Table);
+        tableReactive = params.table ;
 
         const store: StoreType = {
             sheetId,
@@ -128,12 +134,27 @@ export function GridSheetPassive(params) {
     });
 
     type ReducerWithoutAction<S> = (prevState: S) => S;
-
+/*
     const [store, dispatch] = useReducer(
         defaultReducer as unknown as ReducerWithoutAction<StoreType>,
         initialState(),
         () => initialState(),
     );
+*/
+
+ const [store, setStore] = createStore(initialState);
+
+  // Reducerロジックは直接setStateを使用
+  const dispatch = (action) => {
+    switch (action.type) {
+      case 'increment':
+        setStore("count", c => c + 1); // 状態を更新
+        break;
+      case 'decrement':
+        setSore("count", c => c - 1);
+        break;
+    }
+  };
 
     onMount(() => {
         embedStyle();
@@ -197,17 +218,29 @@ export function GridSheetPassive(params) {
         }
       }, [options.sheetWidth]);
     */
+    /*
+        <Context.Provider value={{
+            store: store,
+            dispatch: dispatch
+        }}>
+
+
+     */
     return (
         <Context.Provider value={{
             store: store,
             dispatch: dispatch
         }}>
+
+
             <div
                 class={`gs-root1 ${hub.wire.ready ? "gs-initialized" : ""}`}
                 ref={rootRef}
                 data-sheet-name={params.sheetName}
                 data-mode={mode}
             >
+
+
                 <ScrollHandle style={{
                     position: "fixed",
                     top: 0,
@@ -239,31 +272,29 @@ export function GridSheetPassive(params) {
                 ) : (
                     <SearchBar />
                 )}
+
                 <div
                     class={`gs-main ${params.className || ""}`}
                     ref={mainRef}
                     style={mergeProps({
-                        get maxWidth() { return (store.tableReactive.current?.totalWidth || 0) + 2 },
-                        get maxHeight() { return (store.tableReactive.current?.totalHeight || 0) + 2 },
+                        maxWidth: (store.tableReactive.current?.totalWidth || 0) + 2,
+                        maxHeight: (store.tableReactive.current?.totalHeight || 0) + 2,
+
                         overflow: "auto",
                         resize: sheetResize
                     }, () => params.style)}
                 >
                     <Editor mode={mode} />
                     <Tabular />
-                    <StoreObserver
-                        {...mergeProps(() => params.options, {
-                            get sheetHeight() { return sheetHeight() },
-                            get sheetWidth() { return sheetWidth() },
-                            get sheetName() { return params.sheetName },
-                            connector: connector
-                        })}
-                    />
+                    <StoreObserver {...{ ...options, sheetHeight, sheetWidth, sheetName, connector }} />
+
                     <ContextMenu />
                     <Resizer />
                     <Emitter />
                 </div>
+
             </div>
+
         </Context.Provider>
     );
 }

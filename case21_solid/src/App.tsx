@@ -1,6 +1,6 @@
 import { Table } from "../react-core/src/lib/table";
 import { GridSheet, GridSheetPassive, useHub, makeBorder, type HubProps, Renderer, CheckboxRendererMixin, ThousandSeparatorRendererMixin } from "../react-core/src/index";
-import { CellsByAddressType } from "../react-core/src/types";
+import type { CellsByAddressType } from "../react-core/src/types";
 import { createSignal, createEffect, on, mergeProps } from "solid-js";
 
 function colNumToId(colNum: number): string {
@@ -13,7 +13,8 @@ function colNumToId(colNum: number): string {
     return columnName;
 }
 
-const App: React.FC = () => {
+//const App: React.FC = () => {
+const App  = () => {
     const [enableDecimalLabeler, setEnableDecimalLabeler] = createSignal(false);
 
     const hubProps: HubProps = {

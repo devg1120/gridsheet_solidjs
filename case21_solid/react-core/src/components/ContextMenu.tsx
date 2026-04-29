@@ -19,10 +19,8 @@ export const ContextMenu = () => {
             class="gs-contextmenu-modal"
             onClick={(e: MouseEvent) => {
                 e.preventDefault();
-                dispatch(setContextMenuPosition({
-                    get y() { return -1 },
-                    get x() { return -1 }
-                }));
+        dispatch(setContextMenuPosition({ y: -1, x: -1 }));
+
                 return false;
             }}
         >

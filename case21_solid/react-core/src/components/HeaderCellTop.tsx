@@ -17,7 +17,8 @@ type Props = {
     freezeStyle: CSSProperties; //GUSA
 };
 
-export const HeaderCellTop: FC<Props> = memo(({ x, isFreeze, freezeStyle }) => {
+//export const HeaderCellTop: FC<Props> = memo(({ x, isFreeze, freezeStyle }) => {
+export const HeaderCellTop = ({ x, isFreeze, freezeStyle }) => {
     const colId = x2c(x);
     const { store, dispatch } = useContext(Context);
 
@@ -190,8 +191,7 @@ export const HeaderCellTop: FC<Props> = memo(({ x, isFreeze, freezeStyle }) => {
             id={id}
             data-x={x}
             class={`gs-th gs-th-top header_freeze_y ${choosing.x === x ? "gs-choosing" : ""} ${between({
-                get start() { return selectingZone.startX },
-                get end() { return selectingZone.endX }
+		start: selectingZone.startX, end: selectingZone.endX
             }, x)
                     ? topHeaderSelecting
                         ? "gs-th-selecting"
@@ -209,10 +209,8 @@ export const HeaderCellTop: FC<Props> = memo(({ x, isFreeze, freezeStyle }) => {
                 if (contextMenuItems.length > 0) {
                     e.stopPropagation();
                     safePreventDefault(e);
-                    dispatch(setContextMenuPosition({
-                        get y() { return e.clientY },
-                        get x() { return e.clientX }
-                    }));
+          dispatch(setContextMenuPosition({ y: e.clientY, x: e.clientX }));
+
                     return false;
                 }
                 return true;
@@ -227,16 +225,14 @@ export const HeaderCellTop: FC<Props> = memo(({ x, isFreeze, freezeStyle }) => {
             >
                 <div
                     class="gs-th-inner "
-                    style={{
-                        get height() { return table.headerHeight },
-                        position: "relative"
-                    }}
+		    style={{ height: table.headerHeight, position: 'relative' }}
                 >
+
                     <ScrollHandle
-                        style={{
-                            position: "absolute",
-                            get zIndex() { return topHeaderSelecting ? -1 : 1 }
-                        }}
+            style={{
+              position: 'absolute',
+              zIndex: topHeaderSelecting ? -1 : 1,
+            }}
                         vertical={-1}
                     />
                     {table.getLabel(col?.labeler, x) ?? colId}
@@ -248,7 +244,8 @@ export const HeaderCellTop: FC<Props> = memo(({ x, isFreeze, freezeStyle }) => {
                   gs-resizer 
                   ${prevention.hasOperation(col?.prevention, prevention.Resize) ? "gs-protected" : ""}
                   ${dragging ? "gs-hidden" : ""} `}
-                                    style={{ get height() { return table.headerHeight } }}
+            style={{ height: table.headerHeight }}
+
                                     onMouseDown={handleResizeMouseDown}
                                 >
                                     <i />
@@ -261,4 +258,5 @@ export const HeaderCellTop: FC<Props> = memo(({ x, isFreeze, freezeStyle }) => {
             </div>
         </th>
     );
-});
+//});
+};
