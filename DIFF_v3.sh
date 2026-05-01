@@ -1,114 +1,14 @@
 
-D1=case21_solid/react-core/src/components
-D2=case21/react-core/src/components
-#KEYS=( type const table )
+#diff -Bw --side-by-side	 --suppress-common-lines  case21_solid/react-core/src/components/Cell.tsx  case21/react-core/src/components/Cell.tsx
+#diff -r -Bw --side-by-side	  case21_solid/react-core/src/components/Cell.tsx  case21/react-core/src/components/Cell.tsx
+#diff -Bwu  case21_solid/react-core/src/components/Cell.tsx  case21/react-core/src/components/Cell.tsx
 
-params="type:const:table"
-#set -f
-KEYS=(${params//:/ })
+#S1=case21_solid/react-core/src/components/Cell.tsx
+#S2=case21/react-core/src/components/Cell.tsx
+#diff -r -Bw --side-by-side $S1 $S2
 
-
-
-F=$1
-TARGET="${F}|"
-
-LESS_SOP=""
-
-for item in "${KEYS[@]}" ; do
-    #echo "[ ${item} ]"
-    LESS_SOP="${LESS_SOP} -p ${item}"
-done
-
-#LESS="less -R -S -p type -p const -p table"
-
-LESS_BASE="less -R -S "
-LESS="${LESS_BASE} ${LESS_SOP}"
-
-
-(
-
-echo  "DIFF "  "${D2}/${F} "    ${D1}/${F}
-
-diff -r -Bw --side-by-side $D2/$F $D1/$F
-
-) | expand -t 8 | awk -v TARGET=$TARGET '
-
-function basename(file) {
-    sub(".*/", "", file)
-    return file
-}
-
-BEGIN { PSEQ = 0 }
-{
-   if( $1 == "diff" ) {
-     print ""
-     print "\033[1;32m"  $5 "               " $6  "\033[0m"
-     print ""
-     TARGET = basename($5)"|"
-
-   } else if( $1 == "DIFF" ) {
-     print $0 
-     print ""
-   } else {
-
-        F = substr($0,63,1);
-        if( F == ">" ){
-          print TARGET "\033[1;33m"  $0    "\033[0m"
-        } else if ( F == "<" ) {
-          print TARGET "\033[1;34m"  $0    "\033[0m"
-        } else if ( F == "|" ) {
-          print TARGET "\033[1;36m"  $0    "\033[0m"
-        } else {
-          print TARGET $0
-        }
-   }
-}
-'  | `eval echo $LESS`
-
-
-exit
-
-(
-
-echo  "DIFF "  "${D2}/${F} "    ${D1}/${F}
-
-diff -r -Bw --side-by-side $D2/$F $D1/$F
-
-) | expand -t 8 | awk -v TARGET=$TARGET '
-
-function basename(file) {
-    sub(".*/", "", file)
-    return file
-}
-
-BEGIN { PSEQ = 0 }
-{
-   if( $1 == "diff" ) {
-     print ""
-     print "\033[1;32m"  $5 "               " $6  "\033[0m"
-     print ""
-     TARGET = basename($5)"|"
-
-   } else if( $1 == "DIFF" ) {
-     print $0 
-     print ""
-   } else {
-
-        F = substr($0,63,1);
-        if( F == ">" ){
-          print TARGET "\033[1;33m"  $0    "\033[0m"
-        } else if ( F == "<" ) {
-          print TARGET "\033[1;34m"  $0    "\033[0m"
-        } else if ( F == "|" ) {
-          print TARGET "\033[1;36m"  $0    "\033[0m"
-        } else {
-          print TARGET $0
-        }
-   }
-}
-'  | less -R -S -p type -p const
-
-setc() {
+# https://itpfdoc.hitachi.co.jp/manuals/3021/30213b3220/0366.HTM
+# Reset
 NC='\033[0m'       # Text Reset
 # Regular Colors
 BLACK='\033[0;30m'        # BLACK
@@ -173,5 +73,70 @@ BGHIBLUE='\033[0;104m'    # BLUE
 BGHIPURPLE='\033[0;105m'  # PURPLE
 BGHICYAN='\033[0;106m'    # CYAN
 BGHIWHITE='\033[0;107m'   # WHITE
+
+## 使い方:
+# echo -e "${CYAN}This color is cyan!${NC}"
+
+
+D1=case21_solid/react-core/src/components
+D2=case21/react-core/src/components
+F=Cell.tsx
+F=$1
+
+#diff -r -Bw --side-by-side $D1/$F $D2/$F
+
+#(echo $D2/$F "                     " $D1/$F
+#diff -r -Bw --side-by-side $D2/$F $D1/$F) | less
+
+
+#(
+#
+#echo -e ${BGREEN}${D2}/${F} "                     " ${D1}/${F}${NC}
+#echo ""
+#diff -r -Bw --side-by-side $D2/$F $D1/$F
+#
+#) | less -R
+
+
+TARGET="${F}|"
+(
+
+echo  "DIFF "  "${D2}/${F} "    ${D1}/${F}
+
+diff -r -Bw --side-by-side $D2/$F $D1/$F
+
+) | expand -t 8 | awk -v TARGET=$TARGET '
+
+function basename(file) {
+    sub(".*/", "", file)
+    return file
 }
+
+BEGIN { PSEQ = 0 }
+{
+   if( $1 == "diff" ) {
+     print ""
+     print "\033[1;32m"  $5 "               " $6  "\033[0m"
+     print ""
+     TARGET = basename($5)"|"
+
+   } else if( $1 == "DIFF" ) {
+     print $0 
+     print ""
+   } else {
+
+        F = substr($0,63,1);
+        if( F == ">" ){
+          print TARGET "\033[1;33m"  $0    "\033[0m"
+        } else if ( F == "<" ) {
+          print TARGET "\033[1;34m"  $0    "\033[0m"
+        } else if ( F == "|" ) {
+          print TARGET "\033[1;36m"  $0    "\033[0m"
+        } else {
+          print TARGET $0
+        }
+   }
+}
+'  | less -R -S -p type -p const
+
 
