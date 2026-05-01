@@ -4,18 +4,15 @@ D2=case21/react-core/src/components
 F=$1
 TARGET="${F}|"
 
-#KEYS=( type const table )
-#KEYS=(${params//:/ })
-#LESS_SOP=""
-
-#for item in "${KEYS[@]}" ; do
-#    LESS_SOP="${LESS_SOP} -p ${item}"
-#done
+params="type:const:table"
+KEYS=(${params//:/ })
+SER_OP=""
+for item in "${KEYS[@]}" ; do
+    SER_OP="${SER_OP} -p ${item}"
+done
+echo $SER_OP
 
 LESS_SOP=" -p use"
-
-#LESS="less -R -S -p type -p const -p table"
-
 LESS_BASE="less -R -S "
 LESS=${LESS_BASE}" "${LESS_SOP}
 
