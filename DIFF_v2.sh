@@ -101,41 +101,26 @@ F=$1
 TARGET="${F}|"
 (
 
-echo -e "DIFF "  "${D2}/${F} "    ${D1}/${F}
-
+echo -e ${BGREEN}${D2}/${F} "                     " ${D1}/${F}${NC}
+echo ""
 diff -r -Bw --side-by-side $D2/$F $D1/$F
 
-) | expand -t 8 | awk -v TARGET=$TARGET '
-
-function basename(file) {
-    sub(".*/", "", file)
-    return file
-}
-
+) |expand -t 8 | awk -v TARGET=$TARGET '
 BEGIN { PSEQ = 0 }
 {
-   if( $1 == "diff" ) {
-     print ""
-     print "\033[1;32m"  $5 "               " $6  "\033[0m"
-     print ""
-     TARGET = basename($5)"|"
 
-   } else if( $1 == "DIFF" ) {
-     print $0 
-     print ""
+   F = substr($0,63,1);
+   #print F 
+   #F="<"
+
+   if( F == ">" ){
+     print TARGET "\033[33m"  $0    "\033[0m"
+   } else if ( F == "<" ) {
+     print TARGET "\033[34m"  $0    "\033[0m"
    } else {
-
-        F = substr($0,63,1);
-        if( F == ">" ){
-          print TARGET "\033[1;33m"  $0    "\033[0m"
-        } else if ( F == "<" ) {
-          print TARGET "\033[1;34m"  $0    "\033[0m"
-        } else if ( F == "|" ) {
-          print TARGET "\033[1;36m"  $0    "\033[0m"
-        } else {
-          print TARGET $0
-        }
+     print TARGET $0
    }
+
 }
 '  | less -R
 

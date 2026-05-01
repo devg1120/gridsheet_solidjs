@@ -1,0 +1,430 @@
+[1;32mcase21/react-core/src/components/Cell.tsx                       case21_solid/react-core/src/components/Cell.tsx[0m
+
+import {                                                      <
+  useContext,                                                 <
+  useRef,                                                     <
+  useCallback,                                                <
+  useEffect,                                                  <
+  memo,                                                       <
+  useMemo,                                                    <
+} from "react";                                               <
+import { x2c, y2r } from "../lib/converters";                   import { x2c, y2r } from "../lib/converters";
+import { zoneToArea, among, areaToRange } from "../lib/struct   import { zoneToArea, among, areaToRange } from "../lib/struct
+import {                                                      | import { choose, select, drag, write, setEditorRect, setConte
+  choose,                                                     <
+  select,                                                     <
+  drag,                                                       <
+  write,                                                      <
+  setEditorRect,                                              <
+  setContextMenuPosition,                                     <
+  setAutofillDraggingTo,                                      <
+  setEditingAddress,                                          <
+  setDragging,                                                <
+  submitAutofill,                                             <
+  setStore,                                                   <
+} from "../store/actions";                                    <
+                                                              <
+import { Context } from "../store";                             import { Context } from "../store";
+import { FormulaError } from "../formula/evaluator";            import { FormulaError } from "../formula/evaluator";
+import { insertRef, isRefInsertable } from "../lib/input";      import { insertRef, isRefInsertable } from "../lib/input";
+import { isXSheetFocused } from "../store/helpers";             import { isXSheetFocused } from "../store/helpers";
+import type { CSSProperties, FC, RefObject } from "react";    <
+import { isTouching, safePreventDefault } from "../lib/events   import { isTouching, safePreventDefault } from "../lib/events
+import type { UserTable } from "../lib/table";                | import { UserTable } from "../lib/table";
+                                                              > import { useContext, createEffect, on, createMemo, mergeProps
+
+type Props = {                                                  type Props = {
+  x: number;                                                        x: number;
+  y: number;                                                        y: number;
+  colSpan_size: number;                                             colSpan_size: number;
+  rowSpan_size: number;                                             rowSpan_size: number;
+  freezeStyle: CSSProperties;                                       freezeStyle: CSSProperties;
+  operationStyle?: CSSProperties;                                   operationStyle?: CSSProperties;
+  freeze_y:boolean;                                                 freeze_y: boolean;
+  freeze_x:boolean;                                                 freeze_x: boolean;
+};                                                              };
+
+export const Cell: FC<Props> = memo(                          | export const Cell: FC<Props> = (
+  ({ y, x, freezeStyle, colSpan_size, rowSpan_size, operation       ({ y, x, freezeStyle, colSpan_size, rowSpan_size, operati
+
+    const rowId = y2r(y);                                               const rowId = y2r(y);
+    const colId = x2c(x);                                               const colId = x2c(x);
+    const address = `${colId}${rowId}`;                                 const address = `${colId}${rowId}`;
+    const { store, dispatch } = useContext(Context);                    const { store, dispatch } = useContext(Context);
+    const isFirstPointed = useRef(true);                      |         //const isFirstPointed = useRef(true);
+                                                              >         const isFirstPointed = true;
+
+    const cellRef = useRef<HTMLTableCellElement>(null);       |         //const cellRef = useRef<HTMLTableCellElement>(null);
+                                                              >         const cellRef = null;
+    const {                                                             const {
+      tableReactive: tableRef,                                              tableReactive: tableRef,
+      editingAddress,                                                       editingAddress,
+      choosing,                                                             choosing,
+      selectingZone,                                                        selectingZone,
+      leftHeaderSelecting,                                                  leftHeaderSelecting,
+      topHeaderSelecting,                                                   topHeaderSelecting,
+      editorRef,                                                            editorRef,
+      showAddress,                                                          showAddress,
+      autofillDraggingTo,                                                   autofillDraggingTo,
+      contextMenuItems,                                                     contextMenuItems,
+    } = store;                                                |         } = store()();
+    const table = tableRef.current;                                     const table = tableRef.current;
+
+    // Whether the focus is on another sheet                            // Whether the focus is on another sheet
+    const xSheetFocused = isXSheetFocused(store);                       const xSheetFocused = isXSheetFocused(store);
+
+    const lastFocused = table?.wire.lastFocused;                        const lastFocused = table?.wire.lastFocused;
+
+    const selectingArea = zoneToArea(selectingZone); // (top,           const selectingArea = zoneToArea(selectingZone); // (
+
+    const editing = editingAddress === address;                         const editing = editingAddress === address;
+    const pointed = choosing.y === y && choosing.x === x;               const pointed = choosing.y === y && choosing.x === x;
+    const _setEditorRect = useCallback(() => {                |         const _setEditorRect = (() => {
+      const rect = cellRef.current?.getBoundingClientRect();                const rect = cellRef.current?.getBoundingClientRe
+      if (rect == null) {                                                   if (rect == null) {
+        return null;                                                            return null;
+      }                                                                     }
+      dispatch(                                                             dispatch(
+        setEditorRect({                                                         setEditorRect({
+          y: rect.y,                                                                y: rect.y,
+          x: rect.x,                                                                x: rect.x,
+          height: rect.height,                                                      height: rect.height,
+          width: rect.width,                                                        width: rect.width,
+        }),                                                                     }),
+      );                                                                    );
+    }, []);                                                   |         });
+
+    useEffect(() => {                                         |         createEffect(on(
+                                                              >             () => [pointed, editing],
+                                                              >             () => {
+      // Avoid setting coordinates on the initial render to a                   // Avoid setting coordinates on the initial r
+      if (pointed && !isFirstPointed.current) {                                 if (pointed && !isFirstPointed.current) {
+        _setEditorRect();                                                           _setEditorRect();
+        return;                                                                     return;
+      }                                                                         }
+      isFirstPointed.current = false;                                           isFirstPointed.current = false;
+    }, [pointed, editing]);                                   |             }
+                                                              >         ));
+
+    if (!table) {                                                       if (!table) {
+      return null;                                                          return null;
+    }                                                                   }
+
+    const cell = table.getCellByPoint({ y, x }, "SYSTEM");              const cell = table.getCellByPoint({ y, x }, "SYSTEM")
+    const writeCell = useCallback((value: string) => {        |         const writeCell = ((value: string) => {
+      dispatch(write({ value }));                                           dispatch(write({ value }));
+    }, []);                                                   |         });
+
+    const sync = useCallback((table: UserTable) => {          |         const sync = ((table: UserTable) => {
+      dispatch(setStore({ tableReactive: { current: table.__r               dispatch(setStore({ tableReactive: { current: tab
+    }, []);                                                   |         });
+1                                                                       1
+    let errorMessage = "";                                              let errorMessage = "";
+    let rendered: any;                                                  let rendered: any;
+    try {                                                               try {
+      rendered = table.render({ table, point: { y, x }, sync                rendered = table.render({ table, point: { y, x },
+      if (rendered  == "" ) { // GUSA                                       if (rendered == "") { // GUSA
+            rendered = " "                                                      rendered = " "
+      }                                                                     }
+
+    } catch (e: any) {                                                  } catch (e: any) {
+      if (e instanceof FormulaError) {                                      if (e instanceof FormulaError) {
+        errorMessage = e.message;                                               errorMessage = e.message;
+        rendered = e.code;                                                      rendered = e.code;
+      } else {                                                              } else {
+        errorMessage = e.message;                                               errorMessage = e.message;
+        rendered = "#UNKNOWN";                                                  rendered = "#UNKNOWN";
+        console.error(e);                                                       console.error(e);
+      }                                                                     }
+      // TODO: debug flag                                                   // TODO: debug flag
+    }                                                                   }
+    const input = editorRef.current;                                    const input = editorRef.current;
+
+    const editingAnywhere = !!(table.wire.editingAddress || e           const editingAnywhere = !!(table.wire.editingAddress 
+
+    const handleDragStart = useCallback(                      |         const handleDragStart = (
+      (e: React.MouseEvent | React.TouchEvent) => {                         (e: React.MouseEvent | React.TouchEvent) => {
+        e.stopPropagation();                                                    e.stopPropagation();
+        safePreventDefault(e);                                                  safePreventDefault(e);
+
+        if (!isTouching(e)) {                                                   if (!isTouching(e)) {
+          return false;                                                             return false;
+        }                                                                       }
+        if (!input) {                                                           if (!input) {
+          return false;                                                             return false;
+        }                                                                       }
+
+        // Single cell selection only for touch events                          // Single cell selection only for touch event
+        if (e.type.startsWith("touch")) {                                       if (e.type.startsWith("touch")) {
+          // Blur the input field to commit current value whe                       // Blur the input field to commit current
+          if (editingAnywhere && input) {                                           if (editingAnywhere && input) {
+            input.blur();                                                               input.blur();
+          }                                                                         }
+          dispatch(choose({ y, x }));                                               dispatch(choose({ y, x }));
+          dispatch(select({ startY: y, startX: x, endY: y, en                       dispatch(select({ startY: y, startX: x, e
+          return true;                                                              return true;
+        }                                                                       }
+
+        // Normal drag operation for mouse events                               // Normal drag operation for mouse events
+        if (e.shiftKey) {                                                       if (e.shiftKey) {
+          dispatch(drag({ y, x }));                                                 dispatch(drag({ y, x }));
+        } else {                                                                } else {
+          dispatch(select({ startY: y, startX: x, endY: -1, e                       dispatch(select({ startY: y, startX: x, e
+        }                                                                       }
+
+        dispatch(setDragging(true));                                            dispatch(setDragging(true));
+        const fullAddress = `${table.sheetPrefix(!xSheetFocus                   const fullAddress = `${table.sheetPrefix(!xSh
+        if (editingAnywhere) {                                                  if (editingAnywhere) {
+          const inserted = insertRef({                                              const inserted = insertRef({
+            input: lastFocused || null,                                                 input: lastFocused || null,
+            ref: fullAddress,                                                           ref: fullAddress,
+          });                                                                       });
+          if (inserted) {                                                           if (inserted) {
+            return false;                                                               return false;
+          }                                                                         }
+        }                                                                       }
+
+        table.wire.lastFocused = input;                                         table.wire.lastFocused = input;
+        input.focus();                                                          input.focus();
+        dispatch(setEditingAddress(""));                                        dispatch(setEditingAddress(""));
+
+        if (autofillDraggingTo) {                                               if (autofillDraggingTo) {
+          return false;                                                             return false;
+        }                                                                       }
+
+        if (editingAnywhere) {                                                  if (editingAnywhere) {
+          writeCell(input.value);                                                   writeCell(input.value);
+        }                                                                       }
+        if (!e.shiftKey) {                                                      if (!e.shiftKey) {
+          dispatch(choose({ y, x }));                                               dispatch(choose({ y, x }));
+        }                                                                       }
+        return true;                                                            return true;
+      },                                                      |             }
+      [                                                       <
+        editingAnywhere,                                      <
+        input,                                                <
+        address,                                              <
+        xSheetFocused,                                        <
+        lastFocused,                                          <
+        autofillDraggingTo,                                   <
+        writeCell,                                            <
+      ],                                                      <
+    );                                                                  );
+
+    const handleDragEnd = useCallback(                        |         const handleDragEnd = (
+      (e: React.MouseEvent | React.TouchEvent) => {                         (e: React.MouseEvent | React.TouchEvent) => {
+        e.stopPropagation();                                                    e.stopPropagation();
+        if (e.type.startsWith("touch")) {                                       if (e.type.startsWith("touch")) {
+          return;                                                                   return;
+        }                                                                       }
+
+        safePreventDefault(e);                                                  safePreventDefault(e);
+        dispatch(setDragging(false));                                           dispatch(setDragging(false));
+        if (autofillDraggingTo) {                                               if (autofillDraggingTo) {
+          dispatch(submitAutofill(autofillDraggingTo));                             dispatch(submitAutofill(autofillDraggingT
+          input?.focus();                                                           input?.focus();
+          return false;                                                             return false;
+        }                                                                       }
+        if (editingAnywhere) {                                                  if (editingAnywhere) {
+          dispatch(drag({ y: -1, x: -1 }));                                         dispatch(drag({ y: -1, x: -1 }));
+        }                                                                       }
+      },                                                      |             }
+      [autofillDraggingTo, editingAnywhere, input],           <
+    );                                                                  );
+
+    const handleDragging = useCallback(                       |         const handleDragging = (
+      (e: React.MouseEvent | React.TouchEvent) => {                         (e: React.MouseEvent | React.TouchEvent) => {
+        if (!isTouching(e)) {                                                   if (!isTouching(e)) {
+          return false;                                                             return false;
+        }                                                                       }
+
+        // Do nothing for touch events                                          // Do nothing for touch events
+        if (e.type.startsWith("touch")) {                                       if (e.type.startsWith("touch")) {
+          return false;                                                             return false;
+        }                                                                       }
+
+        safePreventDefault(e);                                                  safePreventDefault(e);
+        e.stopPropagation();                                                    e.stopPropagation();
+
+        if (autofillDraggingTo) {                                               if (autofillDraggingTo) {
+          dispatch(setAutofillDraggingTo({ x, y }));                                dispatch(setAutofillDraggingTo({ x, y }))
+          return false;                                                             return false;
+        }                                                                       }
+        if (leftHeaderSelecting) {                                              if (leftHeaderSelecting) {
+          dispatch(drag({ y, x: table.getNumCols() }));                             dispatch(drag({ y, x: table.getNumCols() 
+          return false;                                                             return false;
+        }                                                                       }
+        if (topHeaderSelecting) {                                               if (topHeaderSelecting) {
+          dispatch(drag({ y: table.getNumRows(), x }));                             dispatch(drag({ y: table.getNumRows(), x 
+          return false;                                                             return false;
+        }                                                                       }
+        if (editingAnywhere && !isRefInsertable(lastFocused |                   if (editingAnywhere && !isRefInsertable(lastF
+          return false;                                                             return false;
+        }                                                                       }
+        dispatch(drag({ y, x }));                                               dispatch(drag({ y, x }));
+
+        if (editingAnywhere) {                                                  if (editingAnywhere) {
+          const newArea = zoneToArea({ ...selectingZone, endY                       const newArea = zoneToArea({ ...selecting
+          const fullRange = `${table.sheetPrefix(!xSheetFocus                       const fullRange = `${table.sheetPrefix(!x
+          insertRef({ input: lastFocused || null, ref: fullRa                       insertRef({ input: lastFocused || null, r
+        }                                                                       }
+        //table.wire.transmit(); // Force drawing because the                   //table.wire.transmit(); // Force drawing bec
+        return true;                                                            return true;
+      },                                                      |             }
+      [                                                       <
+        autofillDraggingTo,                                   <
+        leftHeaderSelecting,                                  <
+        topHeaderSelecting,                                   <
+        table,                                                <
+        editingAnywhere,                                      <
+        lastFocused,                                          <
+        selectingZone,                                        <
+        xSheetFocused,                                        <
+      ],                                                      <
+    );                                                                  );
+
+    const handleAutofillMouseDown = useCallback((e: React.Mou |         const handleAutofillMouseDown = ((e: React.MouseEvent
+      dispatch(setAutofillDraggingTo({ x, y }));                            dispatch(setAutofillDraggingTo({ x, y }));
+      dispatch(setDragging(true));                                          dispatch(setDragging(true));
+      e.stopPropagation();                                                  e.stopPropagation();
+    }, []);                                                   |         });
+
+    // --- Memoize event handlers with useCallback ---                  // --- Memoize event handlers with useCallback ---
+    const onContextMenu = useCallback(                        |         const onContextMenu = (
+      (e: React.MouseEvent<HTMLTableCellElement>) => {                      (e: React.MouseEvent<HTMLTableCellElement>) => {
+        if (contextMenuItems.length > 0) {                                      if (contextMenuItems.length > 0) {
+          e.stopPropagation();                                                      e.stopPropagation();
+          safePreventDefault(e);                                                    safePreventDefault(e);
+          dispatch(setContextMenuPosition({ y: e.clientY, x:                        dispatch(setContextMenuPosition({ y: e.cl
+          return false;                                                             return false;
+        }                                                                       }
+        return true;                                                            return true;
+      },                                                      |             }
+      [contextMenuItems.length],                              <
+    );                                                                  );
+
+    const onDoubleClick = useCallback(                        |         const onDoubleClick = (
+      (e: React.MouseEvent<HTMLTableCellElement>) => {                      (e: React.MouseEvent<HTMLTableCellElement>) => {
+        e.stopPropagation();                                                    e.stopPropagation();
+        safePreventDefault(e);                                                  safePreventDefault(e);
+        setEditingAddress(address);                                             setEditingAddress(address);
+        const dblclick = document.createEvent("MouseEvents");                   const dblclick = document.createEvent("MouseE
+        dblclick.initEvent("dblclick", true, true);                             dblclick.initEvent("dblclick", true, true);
+        input?.dispatchEvent(dblclick);                                         input?.dispatchEvent(dblclick);
+        return false;                                                           return false;
+      },                                                      |             }
+      [address, input],                                       <
+    );                                                                  );
+
+    const autofillDragClass = useMemo(() => {                 |         const autofillDragClass = createMemo(() => {
+      if (!editing && pointed && selectingArea.bottom === -1)               if (!editing && pointed && selectingArea.bottom =
+        return "gs-autofill-drag";                                              return "gs-autofill-drag";
+      }                                                                     }
+
+      if (selectingArea.bottom === y && selectingArea.right =               if (selectingArea.bottom === y && selectingArea.r
+        return "gs-autofill-drag";                                              return "gs-autofill-drag";
+      }                                                                     }
+      return "gs-autofill-drag gs-hidden";                                  return "gs-autofill-drag gs-hidden";
+    }, [editing, pointed, selectingArea]);                    |         });
+
+    /*                                                                  /*
+  const span_list = [                                                 const span_list = [
+   {  x:  5, y:  5, col_size: 2, row_size: 1 },                        {  x:  5, y:  5, col_size: 2, row_size: 1 },
+//   {  x:  3, y: 10, col_size: 2, row_size: 2 },                   //   {  x:  3, y: 10, col_size: 2, row_size: 2 },
+  ]                                                                   ]
+*/                                                                  */
+    /*                                                                  /*
+  let colSpan_size = 1; // default                                    let colSpan_size = 1; // default
+  let rowSpan_size = 1; // default                                    let rowSpan_size = 1; // default
+                                                                    
+  if (typeof span_list !== 'undefined') {                             if (typeof span_list !== 'undefined') {
+    for ( let i = 0; i < span_list.length; i++){                        for ( let i = 0; i < span_list.length; i++){
+      if ( x == span_list[i].x && y == span_list[i].y ) {                 if ( x == span_list[i].x && y == span_list[i].y ) {
+          if (span_list[i].col_size > 1 ) {                                   if (span_list[i].col_size > 1 ) {
+             colSpan_size = span_list[i].col_size;                               colSpan_size = span_list[i].col_size;
+          }                                                                   }
+          if (span_list[i].row_size > 1 ) {                                   if (span_list[i].row_size > 1 ) {
+             rowSpan_size = span_list[i].row_size;                               rowSpan_size = span_list[i].row_size;
+          }                                                                   }
+      }                                                                   }
+    }                                                                   }
+  }                                                                   }
+*/                                                                  */
+
+
+    if (!input) {                                                       if (!input) {
+      return (                                                              return (
+        <td                                                                     <td
+          key={x}                                             <
+          data-x={x}                                                                data-x={x}
+          data-y={y}                                                                data-y={y}
+          data-address={address}                                                    data-address={address}
+          className="gs-cell gs-hidden"                       |                     class="gs-cell gs-hidden"
+        >                                                                       >
+          <div className="gs-cell-inner-wrap">                |                     <div class="gs-cell-inner-wrap">
+            <div className="gs-cell-inner">                   |                         <div class="gs-cell-inner">
+              <div className="gs-cell-rendered"></div>        |                             <div class="gs-cell-rendered"></d
+            </div>                                                                      </div>
+            <div className="gs-autofill-drag"></div>          |                         <div class="gs-autofill-drag"></div>
+          </div>                                                                    </div>
+        </td>                                                                   </td>
+      );                                                                    );
+    }                                                                   }
+
+    return (                                                            return (
+      <td                                                                   <td
+        key={x}                                               <
+        ref={cellRef}                                                           ref={cellRef}
+        data-x={x}                                                              data-x={x}
+        data-y={y}                                                              data-y={y}
+        data-address={address}                                                  data-address={address}
+        className={`gs-cell ${among(selectingArea, { y, x })  |                 class={`gs-cell ${among(selectingArea, {
+          editing ? "gs-editing" : ""                         |                     y: y,
+                                                              >                     x: x
+                                                              >                 }) ? "gs-selecting" : ""} ${pointed ? "gs-cho
+        } ${freeze_y ? "freeze_y" : ""}  ${freeze_x ? "freeze                       } ${freeze_y ? "freeze_y" : ""}  ${freeze
+        style={{                                              |                 style={mergeProps(() => cell?.style, operatio
+          ...cell?.style,                                     <
+          ...operationStyle,                                  <
+          ...freezeStyle,                                     <
+        }}                                                    <
+        onContextMenu={onContextMenu}                                           onContextMenu={onContextMenu}
+        onDoubleClick={onDoubleClick}                                           onDoubleClick={onDoubleClick}
+        colSpan={colSpan_size}                                                  colSpan={colSpan_size}
+        rowSpan={rowSpan_size}                                                  rowSpan={rowSpan_size}
+      >                                                                     >
+        <div                                                                    <div
+          className={`gs-cell-inner-wrap`}                    |                     class={`gs-cell-inner-wrap`}
+          onMouseDown={handleDragStart}                                             onMouseDown={handleDragStart}
+          onTouchStart={handleDragStart}                                            onTouchStart={handleDragStart}
+          onMouseEnter={handleDragging}                                             onMouseEnter={handleDragging}
+          onMouseUp={handleDragEnd}                                                 onMouseUp={handleDragEnd}
+
+        >                                                                       >
+          <div                                                                      <div
+            className={"gs-cell-inner"}                       |                         class={"gs-cell-inner"}
+            style={{                                          |                         style={{}}
+              //...cell?.style,                               <
+              //justifyContent: cell?.justifyContent || "cent <
+              //alignItems: cell?.alignItems || "start",      <
+                                                              <
+            }}                                                <
+          >                                                                         >
+            {errorMessage && (                                                          {errorMessage && (
+              <div className="gs-formula-error-triangle" titl |                             <div class="gs-formula-error-tria
+            )}                                                                          )}
+            {showAddress && <div className="gs-cell-label">{a |                         {showAddress && <div class="gs-cell-l
+            <div className="gs-cell-rendered">{rendered}</div |                         <div class="gs-cell-rendered">{render
+          </div>                                                                    </div>
+          <div                                                                      <div
+            className={autofillDragClass}                     |                         class={autofillDragClass()}
+            onMouseDown={handleAutofillMouseDown}                                       onMouseDown={handleAutofillMouseDown}
+          ></div>                                                                   ></div>
+        </div>                                                                  </div>
+      </td>                                                                 </td>
+    );                                                                  );
+  },                                                          | //    },
+                                                              >     } //FIX
+);                                                              );
+
+
