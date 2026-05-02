@@ -9,6 +9,8 @@ import { isXSheetFocused } from "../store/helpers";
 import { ScrollHandle } from "./ScrollHandle";
 import { isTouching, safePreventDefault } from "../lib/events";
 import { useDebounceCallback } from "./hooks";
+import { useContext } from "solid-js";
+
 
 type Props = {
     y: number;
@@ -30,7 +32,7 @@ export const HeaderCellLeft  = ({ y, isFreeze }) => {
         autofillDraggingTo,
         dragging,
         contextMenuItems,
-    } = store()();
+    } = store();
     const table = tableRef;
 
     const row = table?.getCellByPoint({ y, x: 0 }, "SYSTEM");
@@ -46,11 +48,11 @@ export const HeaderCellLeft  = ({ y, isFreeze }) => {
             dispatch(write({ value, point: choosing }));
         }
 
-    const handleResizeMouseDown = useCallback((e: React.MouseEvent) => {
+    const handleResizeMouseDown = (e: React.MouseEvent) => {
         dispatch(setResizingPositionY([y, e.clientY, e.clientY]));
         e.stopPropagation();
         safePreventDefault(e);
-    }, []);
+    } ;
 
     const handleDragStart =
         (e: React.MouseEvent | React.TouchEvent) => {
@@ -197,7 +199,7 @@ export const HeaderCellLeft  = ({ y, isFreeze }) => {
                         : "gs-selecting"
                     : ""
                 }`}
-            style={{ height: height }}
+            style={{ height: height+"px" }}
             onContextMenu={handleContextMenu}
         >
             <div
@@ -209,7 +211,7 @@ export const HeaderCellLeft  = ({ y, isFreeze }) => {
             >
                 <div
                     class="gs-th-inner"
-		    style={{ width: table.headerWidth, position: 'relative' }}
+		    style={{ width: table.headerWidth + "px", position: 'relative' }}
                 >
                     <ScrollHandle
             style={{
@@ -227,7 +229,7 @@ export const HeaderCellLeft  = ({ y, isFreeze }) => {
                   gs-resizer
                   ${prevention.hasOperation(row?.prevention, prevention.Resize) ? "gs-protected" : ""}
                   ${dragging ? "gs-hidden" : ""}`}
-				                style={{ width: table.headerWidth }}
+				                style={{ width: table.headerWidth + "px" }}
 
                                     onMouseDown={handleResizeMouseDown}
                                 ></div>

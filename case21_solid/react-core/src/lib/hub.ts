@@ -97,7 +97,7 @@ export class Wire {
         for (let i = 0; i < keys.length; i++) {
             const sheetId = keys[i];
             const storeDispatch = this.contextsBySheetId[sheetId];
-            const table = storeDispatch.store.tableReactive.current;
+            const table = storeDispatch.store.tableReactive;
             if (!table || table.status === 0) {
                 return;
             }
@@ -105,7 +105,7 @@ export class Wire {
         }
         for (let i = 0; i < tobe.length; i++) {
             const { store, dispatch } = tobe[i];
-            const table = store.tableReactive.current;
+            const table = store.tableReactive;
             if (!table) {
                 continue;
             }

@@ -1,5 +1,8 @@
 import { Table } from "../react-core/src/lib/table";
-import { GridSheet, GridSheetPassive, useHub, makeBorder, type HubProps, Renderer, CheckboxRendererMixin, ThousandSeparatorRendererMixin } from "../react-core/src/index";
+//import { GridSheet, GridSheetPassive, useHub, makeBorder, type HubProps, Renderer, CheckboxRendererMixin, ThousandSeparatorRendererMixin } from "../react-core/src/index";
+
+import { GridSheetPassive, useHub, makeBorder, type HubProps, Renderer, CheckboxRendererMixin, ThousandSeparatorRendererMixin } from "../react-core/src/index";
+
 import type { CellsByAddressType } from "../react-core/src/types";
 import { createSignal, createEffect, on, mergeProps } from "solid-js";
 
@@ -276,7 +279,7 @@ const App  = () => {
                 />
 
                 <br />
-
+{/*
                 <GridSheet
                     hub={hub}
                     initialCells={{
@@ -436,6 +439,7 @@ const App  = () => {
                     options={{}}
                     sheetName="Sheet2"
                 />
+*/}
             </div>
             {/* Labeler Control */}
             <div class="labeler-control">

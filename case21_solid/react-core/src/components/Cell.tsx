@@ -26,13 +26,14 @@ export const Cell: FC<Props> = (
         const rowId = y2r(y);
         const colId = x2c(x);
         const address = `${colId}${rowId}`;
+	//console.log(address)
         const { store, dispatch } = useContext(Context);
         //const isFirstPointed = useRef(true);
-        const isFirstPointed = true;
+        let isFirstPointed = true;
 
         //const cellRef = useRef<HTMLTableCellElement>(null);
-        const cellRef = null;
-        const {
+        let cellRef = null;
+        let {
             tableReactive: tableRef,
             editingAddress,
             choosing,
@@ -43,8 +44,10 @@ export const Cell: FC<Props> = (
             showAddress,
             autofillDraggingTo,
             contextMenuItems,
-        } = store()();
-        const table = tableRef.current;
+        } = store();
+        const table = tableRef;
+        //console.log(table)
+        //console.log(editorRef)
 
         // Whether the focus is on another sheet
         const xSheetFocused = isXSheetFocused(store);
@@ -56,7 +59,7 @@ export const Cell: FC<Props> = (
         const editing = editingAddress === address;
         const pointed = choosing.y === y && choosing.x === x;
         const _setEditorRect = (() => {
-            const rect = cellRef.current?.getBoundingClientRect();
+            const rect = cellRef?.getBoundingClientRect();
             if (rect == null) {
                 return null;
             }
@@ -74,11 +77,11 @@ export const Cell: FC<Props> = (
             () => [pointed, editing],
             () => {
                 // Avoid setting coordinates on the initial render to account for shifts caused by redrawing due to virtualization.
-                if (pointed && !isFirstPointed.current) {
+                if (pointed && !isFirstPointed) {
                     _setEditorRect();
                     return;
                 }
-                isFirstPointed.current = false;
+                isFirstPointed = false;
             }
         ));
 
@@ -99,6 +102,7 @@ export const Cell: FC<Props> = (
         let rendered: any;
         try {
             rendered = table.render({ table, point: { y, x }, sync });
+	    //console.log(rendered);
             if (rendered == "") { // GUSA
                 rendered = " "
             }
@@ -114,7 +118,7 @@ export const Cell: FC<Props> = (
             }
             // TODO: debug flag
         }
-        const input = editorRef.current;
+        const input = editorRef;
 
         const editingAnywhere = !!(table.wire.editingAddress || editingAddress);
 
@@ -305,7 +309,7 @@ export const Cell: FC<Props> = (
       }
     */
 
-
+/*                                      TODO
         if (!input) {
             return (
                 <td
@@ -323,7 +327,7 @@ export const Cell: FC<Props> = (
                 </td>
             );
         }
-
+*/
         return (
             <td
                 ref={cellRef}

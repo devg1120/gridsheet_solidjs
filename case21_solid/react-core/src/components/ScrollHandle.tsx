@@ -56,7 +56,7 @@ export function ScrollHandle({ style, horizontal = 0, vertical = 0, className = 
             tableReactive: tableRef,
             searchInputRef,
             editingAddress,
-        } = store()();
+        } = store();
         const table = tableRef;
 
         let isScrolling = false;

@@ -18,7 +18,7 @@ export const SearchBar = () => {
         matchingCellIndex,
         matchingCells,
         tableReactive: tableRef,
-    } = store()();
+    } = store();
     const table = tableRef;
 
     const matchingCell = matchingCells[matchingCellIndex];

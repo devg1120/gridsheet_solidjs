@@ -9,7 +9,7 @@ import { isXSheetFocused } from "../store/helpers";
 import { ScrollHandle } from "./ScrollHandle";
 import { isTouching, safePreventDefault } from "../lib/events";
 import { useDebounceCallback } from "./hooks";
-import { mergeProps } from "solid-js";
+import { mergeProps, useContext } from "solid-js";
 
 type Props = {
     x: number;
@@ -32,8 +32,8 @@ export const HeaderCellTop = ({ x, isFreeze, freezeStyle }) => {
         autofillDraggingTo,
         dragging,
         contextMenuItems,
-    } = store()();
-    const table = tableRef.current;
+    } = store();
+    const table = tableRef;
 
     const col = table?.getCellByPoint({ y: 0, x }, "SYSTEM");
     const width = col?.width || DEFAULT_WIDTH;
@@ -201,10 +201,12 @@ export const HeaderCellTop = ({ x, isFreeze, freezeStyle }) => {
             //style={{ width, minWidth: width, maxWidth: width, zIndex:150,  }}
 
             style={mergeProps({
-                width: width,
-                minWidth: width,
-                maxWidth: width
+                width: width+"px",
+                "min-width": width+"px",
+                "max-width": width+"px"
             }, freezeStyle)}
+            //style={{ width:width +"px", min-width: width+ "px", max-width: width + "px",  ...freezeStyle }}
+
             onContextMenu={(e) => {
                 if (contextMenuItems.length > 0) {
                     e.stopPropagation();
@@ -225,7 +227,7 @@ export const HeaderCellTop = ({ x, isFreeze, freezeStyle }) => {
             >
                 <div
                     class="gs-th-inner "
-		    style={{ height: table.headerHeight, position: 'relative' }}
+		    style={{ height: table.headerHeight + "px", position: 'relative' }}
                 >
 
                     <ScrollHandle

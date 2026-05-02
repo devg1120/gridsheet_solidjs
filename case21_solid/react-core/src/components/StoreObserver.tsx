@@ -23,7 +23,7 @@ export const StoreObserver: FC<StoreObserverProps> = ({
     mode,
 }) => {
     const { store, dispatch } = useContext(Context);
-    const { tableReactive: tableRef } = store()();
+    const { tableReactive: tableRef } = store();
     const table = tableRef;
 
     createEffect(() => {

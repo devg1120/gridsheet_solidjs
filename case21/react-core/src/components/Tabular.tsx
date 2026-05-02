@@ -157,6 +157,8 @@ export const Tabular = () => {
     ...palette,
     ...table.wire.paletteBySheetName[table.sheetName],
   });
+    console.log("operationStyles", operationStyles);
+    console.log("table", table);
 
   /*
   const setStyle = (x,y) => {

@@ -68,7 +68,7 @@ export const Editor: FC<Props> = ({ mode }: Props) => {
     sheetId,
   } = store;
   const table = tableRef.current;
-
+  console.log("Editor");
   if (!table) {
     return null;
   }

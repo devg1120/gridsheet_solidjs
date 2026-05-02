@@ -19,6 +19,8 @@ import { ScrollHandle } from "./ScrollHandle";
 import { onMount, createEffect, on, createSignal, mergeProps } from "solid-js";
 import onMountWithCleaning from "@suid/system/onMountWithCleaning";
 
+import { createReducer } from "@solid-primitives/memo";
+
 export const createConnector = () => createRef<Connector | null>();
 //export const useConnector = () => useRef<Connector | null>(null);
 export const useConnector = () =>   null;
@@ -48,20 +50,23 @@ export function GridSheet({
     const editorRef = null;
     const largeEditorRef = null; //GUSA
     const tabularRef = null;
-    const internalConnector = useConnector();
-    const connector = connector ?? internalConnector;
+    //const internalConnector = useConnector();
+    //const connector = connector ?? internalConnector;
 
     const internalHub = useHub({});
-    const hub = hub ?? internalHub;
+    //const hub = hub ?? internalHub;
+    const hub = internalHub; //TODO
 
 
     // useRef to manage sheetId and avoid Strict Mode issues
     //const sheetIdRef = useRef<number | null>(null);
-    const sheetIdRef = null;
-    if (sheetIdRef.current === null) {
-        sheetIdRef.current = ++hub.wire.sheetHead;
-    }
-    const sheetId = sheetIdRef.current;
+    //const sheetIdRef = null;
+    //if (sheetIdRef === null) {
+    //    sheetIdRef = ++hub.wire.sheetHead;
+    //}
+
+    const sheetIdRef = 0;
+    const sheetId = sheetIdRef;
 
     // Initialize tableReactive
     //const tableReactive = useRef<Table | null>(null);
@@ -134,11 +139,17 @@ export function GridSheet({
     });
 
     type ReducerWithoutAction<S> = (prevState: S) => S;
-
+/*
     const [store, dispatch] = useReducer(
         defaultReducer as unknown as ReducerWithoutAction<StoreType>,
         initialState(),
         () => initialState(),
+    );
+*/
+
+    const [store, dispatch] = createReducer(
+        defaultReducer as unknown as ReducerWithoutAction<StoreType>,
+        initialState(),
     );
 
     onMount(() => {

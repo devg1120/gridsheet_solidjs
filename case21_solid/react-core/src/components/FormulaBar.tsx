@@ -24,7 +24,7 @@ export const FormulaBar = ({ ready }: FormulaBarProps) => {
         tableReactive: tableRef,
         inputting,
         editingAddress: editingCell,
-    } = store()();
+    } = store();
 
     //if ( choosing  === undefined ) {     // TODO
     //       return (<></>)
@@ -32,8 +32,11 @@ export const FormulaBar = ({ ready }: FormulaBarProps) => {
     const table = tableRef;
     //const hlRef = useRef<HTMLDivElement | null>(null);
     let hlRef = null;
-    console.log(choosing);
+    //console.log(choosing);
     const address = choosing.x === -1 ? "" : p2a(choosing);
+    //let address = "";
+    //if (choosing) { address =  p2a(choosing); }
+
     const cell = table?.getCellByPoint(choosing, "SYSTEM");
     createEffect(() => {
         if (!table) {

@@ -10,7 +10,7 @@ import { COLOR_PALETTE } from "../lib/palette";
 import { EditorEventWithNativeEvent, ModeType } from "../types";
 import { Fixed } from "./Fixed";
 import { parseHTML, parseText } from "../lib/paste";
-import { Component, createSignal, createEffect, useContext } from "solid-js";
+import { onMount, Component, createSignal, createEffect, useContext } from "solid-js";
 
 type Props = {
     mode: ModeType;
@@ -20,7 +20,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
     const { store, dispatch } = useContext(Context);
     const [selected, setSelected] = createSignal(0);
     const [shiftKey, setShiftKey] = createSignal(false);
-    const {
+    let {
         choosing,
         inputting,
         selectingZone,
@@ -36,8 +36,10 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
         editingOnEnter,
         tableReactive: tableRef,
         sheetId,
-    } = store()();
+    } = store();
     const table = tableRef;
+    console.log("Editor");
+    //let  editorRef = null;
 
     if (!table) {
         return null;
@@ -91,18 +93,24 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
         })
         .map(({ option }) => option);
 
+    let _editorRef = null;
+    onMount(() => {
+       console.log(_editorRef);
+       //dispatch(setStore({editorRef: _editorRef);
+       console.log("dispatch", store());
+    });
     createEffect(() => {
-        editorRef?.current?.focus?.({ preventScroll: true });
+        editorRef?.focus?.({ preventScroll: true });
     }, [editorRef]);
 
     createEffect(() => {
         if (table.wire.lastFocused == null) {
             return;
         }
-        if (table.wire.lastFocused !== editorRef.current) {
+        if (table.wire.lastFocused !== editorRef) {
             return;
         }
-        if (table.wire.lastFocused !== largeEditorRef.current) {
+        if (table.wire.lastFocused !== largeEditorRef) {
             return;
         }
 
@@ -114,8 +122,8 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
     }, [editingAddress, table, sheetId]);
 
     createEffect(() => {
-        //table.wire.transmit();
-        expandInput(editorRef.current);
+        table.wire.transmit();
+        expandInput(editorRef);
     }, [inputting, editingAddress, editorRef]);
 
     const { y, x } = choosing;
@@ -150,7 +158,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
     createEffect(() => {
         setBefore(valueString);
         dispatch(setInputting(valueString));
-        resetInput(editorRef.current, table, choosing);
+        resetInput(editorRef, table, choosing);
     });
 
     const { y: top, x: left, height, width } = editorRect;
@@ -378,7 +386,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
                                 dispatch(setSearchQuery(""));
                             }
                             dispatch(setEntering(false));
-                            requestAnimationFrame(() => searchInputRef.current!.focus());
+                            requestAnimationFrame(() => searchInputRef!.focus());
                             return false;
                         }
                     }
@@ -584,12 +592,13 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
                     class="gs-editor-hl"
          style={{
             //...cell?.style,
-            height: editorRef.current?.scrollHeight,
-            width: (editorRef.current?.scrollWidth ?? 0) - 4,
+            height: editorRef?.scrollHeight + "px",
+            width: ((editorRef?.scrollWidth ?? 0) - 4) + "px",
           }}
                 >
                     {cell?.disableFormula ? inputting : editorStyle(inputting)}
                 </pre>
+
                 <textarea
                     data-sheet-id={sheetId}
                     name="gs-editor-input"
@@ -597,7 +606,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
                     autoFocus={true}
                     spellCheck={false}
                     draggable={false}
-                    ref={editorRef}
+                    ref={_editorRef}
                     rows={numLines}
                     onFocus={handleFocus}
                     style={{
@@ -612,10 +621,11 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
                     onKeyDown={handleKeyDown}
                     onKeyUp={handleKeyUpInternal}
                 />
+
             </div>
             <ul
                 class="gs-editor-options"
-		style={{ marginTop: editorRef.current?.scrollHeight }}
+		style={{ marginTop: editorRef?.scrollHeight }}
             >
                 {filteredOptions.map((option, i) => (
                     <li

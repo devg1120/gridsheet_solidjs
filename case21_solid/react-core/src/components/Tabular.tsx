@@ -16,7 +16,7 @@ import { createEffect, on, useContext, createSignal } from "solid-js";
 export const Tabular = () => {
     const [palette, setPalette] = createSignal<RefPaletteType>({});
     const { store, dispatch } = useContext(Context);
-    const {
+    let  {
         tableReactive,
         choosing,
         editingAddress,
@@ -27,12 +27,17 @@ export const Tabular = () => {
         inputting,
         leftHeaderSelecting,
         topHeaderSelecting,
-    } = store()();
+    } = store();
+
+    //console.log("-",store()) ;
+    //console.log("-",sheetHeight) ;
+    //console.log("-",sheetWidth) ;
 
     const table = tableReactive;
+    //console.log("table", table);
 
     //const tableRef = useRef<HTMLTableElement>(null);
-    const tableRef = null;
+    let tableRef = null;
 
     const [virtualized, setVirtualized] = createSignal<Virtualization | null>(null);
 
@@ -68,7 +73,7 @@ export const Tabular = () => {
     });
 
     createEffect(on(
-        () => [store.inputting, store.editingAddress, tableReactive],
+        () => [store().inputting, store().editingAddress, tableReactive],
         () => {
             if (!table) {
                 return;
@@ -126,28 +131,30 @@ export const Tabular = () => {
 
     createEffect(on(
         () => [
-            tabularRef.current,
+            tabularRef,
             tableReactive,
-            mainRef.current?.clientHeight,
-            mainRef.current?.clientWidth,
+            mainRef?.clientHeight,
+            mainRef?.clientWidth,
         ],
         () => {
             if (!table) {
                 return;
             }
-            setVirtualized(virtualize(table, tabularRef.current));
+            setVirtualized(virtualize(table, tabularRef));
         }
     ));
 
-
+/*
     if (!table || !table.wire.ready) {
         return null;
     }
-
+*/
     const operationStyles = useOperationStyles(store, {
         ...palette(),
         ...table.wire.paletteBySheetName[table.sheetName],
     });
+    console.log("operationStyles", operationStyles);
+    console.log("table", table);
 
     /*
     const setStyle = (x,y) => {
@@ -484,10 +491,9 @@ export const Tabular = () => {
             return false;
         }
     }
-
     return (
         <>
-            <div
+	<div
                 class="gs-tabular"
                 style={{
           width: sheetWidth === -1 ? undefined : sheetWidth,
@@ -582,21 +588,11 @@ export const Tabular = () => {
                                         />
 
                                         <td class="gs-adjuster gs-adjuster-horizontal gs-adjuster-horizontal-left" />
-                                        {/*
-                    {virtualized?.xs?.map((x) => (
-                      <Cell key={x} y={y} x={x} operationStyle={operationStyles[p2a({ y, x })]} />
-                    ))}
-*/}
-
-                                        {/*
-                    {virtualized?.xs?.map((x) => (
-                      <Cell key={x} y={y} x={x} colSpan_size={colSpan_size(x,y)} rowSpan_size={rowSpan_size(x,y)} operationStyle={operationStyles[p2a({ y, x })]} />
-                    ))}
-*/}
 
                                         {virtualized()?.xs?.map((x) => {
                                             if (isSkip(x, y)) {
                                                 //return <></>;
+						//console.log("skip",x,y);
                                                 return
                                             }
 
@@ -652,8 +648,9 @@ const useOperationStyles = (store: StoreType, refs: RefPaletteType) => {
         tableReactive,
         autofillDraggingTo,
         editingAddress,
-    } = store;
-    const table = tableReactive.current;
+    } = store();
+
+    const table = tableReactive;
     if (!table) {
         return {};
     }
@@ -681,7 +678,7 @@ const useOperationStyles = (store: StoreType, refs: RefPaletteType) => {
         }
     }
     if (autofillDraggingTo) {
-        const autofill = new Autofill(store, autofillDraggingTo);
+        const autofill = new Autofill(store(), autofillDraggingTo);
         const { top, left, bottom, right } = autofill.wholeArea;
         for (let y = top; y <= bottom; y++) {
             updateStyle({ y, x: left - 1 }, { borderRight: AUTOFILL_BORDER });

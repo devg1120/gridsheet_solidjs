@@ -63,8 +63,9 @@ export const Cell: FC<Props> = memo(
       autofillDraggingTo,
       contextMenuItems,
     } = store;
-    const table = tableRef.current;
 
+    //console.log(editorRef);
+    const table = tableRef.current;
     // Whether the focus is on another sheet
     const xSheetFocused = isXSheetFocused(store);
 
@@ -114,6 +115,7 @@ export const Cell: FC<Props> = memo(
     let errorMessage = "";
     let rendered: any;
     try {
+    
       rendered = table.render({ table, point: { y, x }, sync });
       if (rendered  == "" ) { // GUSA
             rendered = " " 
@@ -362,7 +364,6 @@ export const Cell: FC<Props> = memo(
         </td>
       );
     }
-
     return (
       <td
         key={x}
@@ -413,6 +414,7 @@ export const Cell: FC<Props> = memo(
         </div>
       </td>
     );
+    
   },
 );
 

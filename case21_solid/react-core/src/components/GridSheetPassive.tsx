@@ -19,6 +19,8 @@ import { ScrollHandle } from "./ScrollHandle";
 import { onMount, createSignal, mergeProps } from "solid-js";
 import { createStore } from "solid-js/store";
 
+import { createReducer } from "@solid-primitives/memo";
+
 //export const createConnector = () => createRef<Connector | null>();  //TODO
 //export const useConnector = () => useRef<Connector | null>(null);    //TODO
 
@@ -76,7 +78,8 @@ export function GridSheetPassive({
     //const tableReactive = useRef<Table | null>(null);
     let  tableReactive = null;
 
-    const [initialState] = createSignal<StoreType>(() => {
+    //const [initialState] = createSignal<StoreType>(() => {
+    const initialState = () => {
         if (!sheetName) {
             sheetName = `Sheet${sheetId}`;
             console.debug(
@@ -126,8 +129,8 @@ export function GridSheetPassive({
             editingAddress: "",
             editorRect: { y: 0, x: 0, height: 0, width: 0 },
             dragging: false,
-            sheetHeight: 0,
-            sheetWidth: 0,
+            sheetHeight: 500,
+            sheetWidth: 500,
             entering: false,
             matchingCells: [],
             matchingCellIndex: 0,
@@ -145,7 +148,7 @@ export function GridSheetPassive({
             mode: "light",
         };
         return store;
-    });
+    };
 
     type ReducerWithoutAction<S> = (prevState: S) => S;
 /*
@@ -156,90 +159,27 @@ export function GridSheetPassive({
     );
 */
 
- const [store, setStore] = createStore(initialState);
-
-  // Reducerロジックは直接setStateを使用
-  const dispatch = (action) => {
-    switch (action.type) {
-      case 'increment':
-        setStore("count", c => c + 1); // 状態を更新
-        break;
-      case 'decrement':
-        setSore("count", c => c - 1);
-        break;
-    }
-  };
+    const [store, dispatch] = createReducer(
+        defaultReducer as unknown as ReducerWithoutAction<StoreType>,
+        initialState(),
+    );
 
     onMount(() => {
         embedStyle();
     });
 
-    /*
-      const [sheetHeight, setSheetHeight] = useState(
-        options?.sheetHeight || estimateSheetHeight(initialCells),
-      );
-      const [sheetWidth, setSheetWidth] = useState(
-        options?.sheetWidth || estimateSheetWidth(initialCells),
-      );
-    */
-    /*
-      const [sheetHeight, setSheetHeight] = useState(
-        400 
-      );
-      const [sheetWidth, setSheetWidth] = useState(
-        800
-      );
-    */
-    /*
-      const [sheetHeight, setSheetHeight] = useState(
-        options?.sheetHeight || 400,
-      );
-      const [sheetWidth, setSheetWidth] = useState(
-        options?.sheetWidth || 800,
-      );
-    */
-
-    /*
-      const sheetHeight = 400;
-      const sheetWidth  = 800;
-    */
 
     const [sheetHeight, setSheetHeight] = createSignal(
         options?.sheetHeight || 400,
     );
+
+    console.log(sheetHeight());
+
     const [sheetWidth, setSheetWidth] = createSignal(
         options?.sheetWidth || 800,
     );
+    console.log(sheetWidth());
 
-    /*
-      useEffect(() => {
-        const intervalId = window.setInterval(() => {
-          setSheetHeight(mainRef.current?.clientHeight || 0);
-          setSheetWidth(mainRef.current?.clientWidth || 0);
-        }, 10);
-        return () => window.clearInterval(intervalId);
-      }, []);
-    */
-    /*
-      useEffect(() => {
-        if (options.sheetHeight) {
-          setSheetHeight(options.sheetHeight);
-        }
-      }, [options.sheetHeight]);
-      useEffect(() => {
-        if (options.sheetWidth) {
-          setSheetWidth(options.sheetWidth);
-        }
-      }, [options.sheetWidth]);
-    */
-    /*
-        <Context.Provider value={{
-            store: store,
-            dispatch: dispatch
-        }}>
-
-
-     */
     return (
         <Context.Provider value={{
             store: store,
@@ -248,7 +188,8 @@ export function GridSheetPassive({
 
 
             <div
-                class={`gs-root1 ${hub.wire.ready ? "gs-initialized" : ""}`}
+                //class={`gs-root1 ${hub.wire.ready ? "gs-initialized" : ""}`}
+                class={`gs-root-gusa ${hub.wire.ready ? "gs-initialized" : ""}`}
                 ref={rootRef}
                 data-sheet-name={sheetName}
                 data-mode={mode}
@@ -291,19 +232,21 @@ export function GridSheetPassive({
                     class={`gs-main ${className || ""}`}
                     ref={mainRef}
                     style={mergeProps({
-                        maxWidth: (store.tableReactive.current?.totalWidth || 0) + 2,
-                        maxHeight: (store.tableReactive.current?.totalHeight || 0) + 2,
+                        maxWidth: ((store.tableReactive?.totalWidth || 0) + 2) +"px",
+                        maxHeight:((store.tableReactive?.totalHeight || 0) + 2) +"px",
 
                         overflow: "auto",
                         resize: sheetResize
                     }, () => style)}
                 >
-                    <Editor mode={mode} />
+		    <Editor mode={mode} />
                     <Tabular />
 		    {/*
                     <StoreObserver {...{ ...options, sheetHeight, sheetWidth, sheetName, connector }} />
+                    <StoreObserver {...{ ...options, sheetHeight, sheetWidth, sheetName  }} />
 		    */}
                     <StoreObserver {...{ ...options, sheetHeight, sheetWidth, sheetName  }} />
+
 
                     <ContextMenu />
                     <Resizer />

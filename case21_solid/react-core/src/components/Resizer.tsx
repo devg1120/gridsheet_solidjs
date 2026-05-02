@@ -17,7 +17,7 @@ export const Resizer = () => {
         selectingZone,
         editorRef,
         mainRef,
-    } = store()();
+    } = store();
     const table = tableRef;
 
     const [y, startY, endY] = posY;
