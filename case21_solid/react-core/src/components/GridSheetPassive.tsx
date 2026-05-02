@@ -147,6 +147,7 @@ export function GridSheetPassive({
             maxNumCols: -1,
             mode: "light",
         };
+	//console.log(store)
         return store;
     };
 
@@ -164,8 +165,12 @@ export function GridSheetPassive({
         initialState(),
     );
 
+    //console.log(store)
+    //console.log(dispatch)
+
     onMount(() => {
         embedStyle();
+        //console.log(initialState());
     });
 
 
@@ -173,12 +178,12 @@ export function GridSheetPassive({
         options?.sheetHeight || 400,
     );
 
-    console.log(sheetHeight());
+    //console.log(sheetHeight());
 
     const [sheetWidth, setSheetWidth] = createSignal(
         options?.sheetWidth || 800,
     );
-    console.log(sheetWidth());
+    //console.log(sheetWidth());
 
     return (
         <Context.Provider value={{

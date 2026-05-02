@@ -12,6 +12,8 @@ import { Fixed } from "./Fixed";
 import { parseHTML, parseText } from "../lib/paste";
 import { onMount, Component, createSignal, createEffect, useContext } from "solid-js";
 
+import { setStore } from "../store/actions";
+
 type Props = {
     mode: ModeType;
 };
@@ -38,7 +40,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
         sheetId,
     } = store();
     const table = tableRef;
-    console.log("Editor");
+    //console.log("Editor", store());
     //let  editorRef = null;
 
     if (!table) {
@@ -94,10 +96,15 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
         .map(({ option }) => option);
 
     let _editorRef = null;
+
     onMount(() => {
-       console.log(_editorRef);
+       //console.log(_editorRef);
        //dispatch(setStore({editorRef: _editorRef);
-       console.log("dispatch", store());
+       //console.log("dispatch", store());
+       dispatch(setStore({ editorRef: _editorRef }));
+       console.log("setStore editorRef", _editorRef);
+
+
     });
     createEffect(() => {
         editorRef?.focus?.({ preventScroll: true });

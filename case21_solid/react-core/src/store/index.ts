@@ -19,5 +19,5 @@ export const Context = createContext(
     },
 );
 
-console.log(Context)
+//console.log(Context)
 

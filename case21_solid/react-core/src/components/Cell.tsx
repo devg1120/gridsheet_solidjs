@@ -47,7 +47,7 @@ export const Cell: FC<Props> = (
         } = store();
         const table = tableRef;
         //console.log(table)
-        //console.log(editorRef)
+        //console.log("editorRef", editorRef)
 
         // Whether the focus is on another sheet
         const xSheetFocused = isXSheetFocused(store);
@@ -309,7 +309,6 @@ export const Cell: FC<Props> = (
       }
     */
 
-/*                                      TODO
         if (!input) {
             return (
                 <td
@@ -327,7 +326,7 @@ export const Cell: FC<Props> = (
                 </td>
             );
         }
-*/
+
         return (
             <td
                 ref={cellRef}
