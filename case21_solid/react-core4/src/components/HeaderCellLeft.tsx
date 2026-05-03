@@ -226,7 +226,7 @@ export const HeaderCellLeft = ({ y, isFreeze }) => {
           <ScrollHandle
             style={{
               position: "absolute",
-              "z-index": leftHeaderSelecting ? -1 : 1,
+              zIndex: leftHeaderSelecting ? -1 : 1,
             }}
             horizontal={-1}
           />

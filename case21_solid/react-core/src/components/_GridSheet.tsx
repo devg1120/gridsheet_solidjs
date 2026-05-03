@@ -220,7 +220,7 @@ export function GridSheet({
         <ScrollHandle
           style={{
             position: "absolute",
-            zIndex: 4,
+            "z-index": 4,
             right: 0,
             top: 0,
             width: 5,
@@ -230,7 +230,7 @@ export function GridSheet({
         <ScrollHandle
           style={{
             position: "absolute",
-            zIndex: 4,
+            "z-index": 4,
             left: 0,
             bottom: 0,
             height: 5,

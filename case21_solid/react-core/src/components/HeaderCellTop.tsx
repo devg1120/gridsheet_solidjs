@@ -191,8 +191,8 @@ export const HeaderCellTop = ({ x, isFreeze, freezeStyle }) => {
     );
   }
   const id = `CH-${colId}`;
-  //style={{ width, minWidth: width, maxWidth: width, zIndex:150,  }}
-  //style={{ width, minWidth: width, maxWidth: width, zIndex:150, ...freezeStyle, }}
+  //style={{ width, minWidth: width, maxWidth: width, "z-index":150,  }}
+  //style={{ width, minWidth: width, maxWidth: width, "z-index":150, ...freezeStyle, }}
   return (
     <th
       id={id}
@@ -210,7 +210,7 @@ export const HeaderCellTop = ({ x, isFreeze, freezeStyle }) => {
             : "gs-selecting"
           : ""
       } `}
-      //style={{ width, minWidth: width, maxWidth: width, zIndex:150,  }}
+      //style={{ width, minWidth: width, maxWidth: width, "z-index":150,  }}
 
       style={mergeProps(
         {
@@ -247,7 +247,7 @@ export const HeaderCellTop = ({ x, isFreeze, freezeStyle }) => {
           <ScrollHandle
             style={{
               position: "absolute",
-              zIndex: topHeaderSelecting ? -1 : 1,
+              "z-index": topHeaderSelecting ? -1 : 1,
             }}
             vertical={-1}
           />

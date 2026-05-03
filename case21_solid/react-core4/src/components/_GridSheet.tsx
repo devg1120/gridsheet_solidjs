@@ -23,28 +23,25 @@ import { FormulaBar } from "./FormulaBar";
 import { SearchBar } from "./SearchBar";
 import { useHub } from "../lib/hub";
 import { ScrollHandle } from "./ScrollHandle";
-import { onMount, createSignal, mergeProps } from "solid-js";
-import { createStore } from "solid-js/store";
+import { onMount, createEffect, on, createSignal, mergeProps } from "solid-js";
+import onMountWithCleaning from "@suid/system/onMountWithCleaning";
 
 import { createReducer } from "@solid-primitives/memo";
 
-//export const createConnector = () => createRef<Connector | null>();  //TODO
-//export const useConnector = () => useRef<Connector | null>(null);    //TODO
+export const createConnector = () => createRef<Connector | null>();
+//export const useConnector = () => useRef<Connector | null>(null);
+export const useConnector = () => null;
 
-//export function GridSheetPassive(params) {
-
-export function GridSheetPassive({
-  //initialCells,
-  table, //GUSA
-  //table  ,   //GUSA
-
+//export function GridSheet(params) {
+export function GridSheet({
+  initialCells,
   sheetName = "",
   connector: initialConnector,
   options = {},
   className,
   style,
   hub: initialHub,
-}: PassiveProps) {
+}: Props) {
   const { sheetResize, showFormulaBar = true, mode = "light" } = options;
   //const rootRef = useRef<HTMLDivElement>(null);
   //const mainRef = useRef<HTMLDivElement>(null);
@@ -53,15 +50,14 @@ export function GridSheetPassive({
   //const largeEditorRef = useRef<HTMLTextAreaElement>(null); //GUSA
   //const tabularRef = useRef<HTMLDivElement>(null);
 
-  let rootRef = null;
-  let mainRef = null;
-  let searchInputRef = null;
-  let editorRef = null;
-  let largeEditorRef = null; //GUSA
-  let tabularRef = null;
-
-  //const internalConnector = useConnector();   //TODO
-  //const connector = connector ?? internalConnector;  //TODO
+  const rootRef = null;
+  const mainRef = null;
+  const searchInputRef = null;
+  const editorRef = null;
+  const largeEditorRef = null; //GUSA
+  const tabularRef = null;
+  //const internalConnector = useConnector();
+  //const connector = connector ?? internalConnector;
 
   const internalHub = useHub({});
   //const hub = hub ?? internalHub;
@@ -69,7 +65,8 @@ export function GridSheetPassive({
 
   // useRef to manage sheetId and avoid Strict Mode issues
   //const sheetIdRef = useRef<number | null>(null);
-  //if (sheetIdRef === null) {                                        //PeD
+  //const sheetIdRef = null;
+  //if (sheetIdRef === null) {
   //    sheetIdRef = ++hub.wire.sheetHead;
   //}
 
@@ -78,10 +75,9 @@ export function GridSheetPassive({
 
   // Initialize tableReactive
   //const tableReactive = useRef<Table | null>(null);
-  let tableReactive = null;
+  const tableReactive = null;
 
-  //const [initialState] = createSignal<StoreType>(() => {
-  const initialState = () => {
+  const [initialState] = createSignal<StoreType>(() => {
     if (!sheetName) {
       sheetName = `Sheet${sheetId}`;
       console.debug(
@@ -91,27 +87,22 @@ export function GridSheetPassive({
     }
     const { minNumRows, maxNumRows, minNumCols, maxNumCols, contextMenuItems } =
       options;
-
-    /*
-            const table = new Table({
-              minNumRows,
-              maxNumRows,
-              minNumCols,
-              maxNumCols,
-              sheetName,
-              hub: wire,
-            });
-        */
+    const table = new Table({
+      minNumRows,
+      maxNumRows,
+      minNumCols,
+      maxNumCols,
+      sheetName: sheetName,
+      hub: hub.wire,
+    });
     table.sheetId = sheetId;
     hub.wire.sheetIdsByName[sheetName] = sheetId;
 
-    //GUSA table.initialize(initialCells);
-    hub.wire.onInit?.({ table: table });
+    table.initialize(initialCells);
+    hub.wire.onInit?.({ table });
 
-    //table.setTotalSize();
-    //tableReactive.current = (params.table as Table);
-    //tableReactive = (params.table as Table);
-    tableReactive = table;
+    table.setTotalSize();
+    tableReactive.current = table;
 
     const store: StoreType = {
       sheetId,
@@ -131,8 +122,8 @@ export function GridSheetPassive({
       editingAddress: "",
       editorRect: { y: 0, x: 0, height: 0, width: 0 },
       dragging: false,
-      sheetHeight: 500,
-      sheetWidth: 500,
+      sheetHeight: 0,
+      sheetWidth: 0,
       entering: false,
       matchingCells: [],
       matchingCellIndex: 0,
@@ -149,9 +140,8 @@ export function GridSheetPassive({
       maxNumCols: -1,
       mode: "light",
     };
-    //console.log(store)
     return store;
-  };
+  });
 
   type ReducerWithoutAction<S> = (prevState: S) => S;
   /*
@@ -167,22 +157,45 @@ export function GridSheetPassive({
     initialState(),
   );
 
-  //console.log(store)
-  //console.log(dispatch)
-
   onMount(() => {
     embedStyle();
-    //console.log(initialState());
   });
 
   const [sheetHeight, setSheetHeight] = createSignal(
-    options?.sheetHeight || 400,
+    options?.sheetHeight || estimateSheetHeight(initialCells),
+  );
+  const [sheetWidth, setSheetWidth] = createSignal(
+    options?.sheetWidth || estimateSheetWidth(initialCells),
   );
 
-  //console.log(sheetHeight());
+  onMountWithCleaning(() => {
+    const intervalId = window.setInterval(() => {
+      setSheetHeight(mainRef.current?.clientHeight || 0);
+      setSheetWidth(mainRef.current?.clientWidth || 0);
+    }, 10);
+    return () => window.clearInterval(intervalId);
+  });
 
-  const [sheetWidth, setSheetWidth] = createSignal(options?.sheetWidth || 800);
-  //console.log(sheetWidth());
+  createEffect(
+    on(
+      () => [options.sheetHeight],
+      () => {
+        if (options.sheetHeight) {
+          setSheetHeight(options.sheetHeight);
+        }
+      },
+    ),
+  );
+  createEffect(
+    on(
+      () => [options.sheetWidth],
+      () => {
+        if (options.sheetWidth) {
+          setSheetWidth(options.sheetWidth);
+        }
+      },
+    ),
+  );
 
   return (
     <Context.Provider
@@ -192,8 +205,7 @@ export function GridSheetPassive({
       }}
     >
       <div
-        //class={`gs-root1 ${hub.wire.ready ? "gs-initialized" : ""}`}
-        class={`gs-root-gusa ${hub.wire.ready ? "gs-initialized" : ""}`}
+        class={`gs-root1 ${hub.wire.ready ? "gs-initialized" : ""}`}
         ref={rootRef}
         data-sheet-name={sheetName}
         data-mode={mode}
@@ -208,7 +220,7 @@ export function GridSheetPassive({
         <ScrollHandle
           style={{
             position: "absolute",
-            "z-index": 4,
+            zIndex: 4,
             right: 0,
             top: 0,
             width: 5,
@@ -218,7 +230,7 @@ export function GridSheetPassive({
         <ScrollHandle
           style={{
             position: "absolute",
-            "z-index": 4,
+            zIndex: 4,
             left: 0,
             bottom: 0,
             height: 5,
@@ -231,16 +243,13 @@ export function GridSheetPassive({
         ) : (
           <SearchBar />
         )}
-
         <div
           class={`gs-main ${className || ""}`}
           ref={mainRef}
           style={mergeProps(
             {
-              "max-width": (store().tableReactive?.totalWidth || 0) + 2 + "px",
-              "max-height":
-                (store().tableReactive?.totalHeight || 0) + 2 + "px",
-
+              maxWidth: (store.tableReactive?.totalWidth || 0) + 2,
+              maxHeight: (store.tableReactive?.totalHeight || 0) + 2,
               overflow: "auto",
               resize: sheetResize,
             },
@@ -249,12 +258,8 @@ export function GridSheetPassive({
         >
           <Editor mode={mode} />
           <Tabular />
-          {/*
-                    <StoreObserver {...{ ...options, sheetHeight, sheetWidth, sheetName, connector }} />
-                    <StoreObserver {...{ ...options, sheetHeight, sheetWidth, sheetName  }} />
-		    */}
           <StoreObserver
-            {...{ ...options, sheetHeight, sheetWidth, sheetName }}
+            {...{ ...options, sheetHeight, sheetWidth, sheetName, connector }}
           />
 
           <ContextMenu />

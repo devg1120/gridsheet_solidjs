@@ -198,7 +198,7 @@ largeEditorRef
   return (
     <label class="gs-formula-bar" data-sheet-id={store.sheetId} style={style}>
       <ScrollHandle
-        style={{ position: "absolute", left: 0, top: 0, "z-index": 2 }}
+        style={{ position: "absolute", left: 0, top: 0, zIndex: 2 }}
         vertical={-1}
       />
       <div class="gs-selecting-address">{address}</div>

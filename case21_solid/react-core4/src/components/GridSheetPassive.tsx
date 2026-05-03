@@ -208,7 +208,7 @@ export function GridSheetPassive({
         <ScrollHandle
           style={{
             position: "absolute",
-            "z-index": 4,
+            zIndex: 4,
             right: 0,
             top: 0,
             width: 5,
@@ -218,7 +218,7 @@ export function GridSheetPassive({
         <ScrollHandle
           style={{
             position: "absolute",
-            "z-index": 4,
+            zIndex: 4,
             left: 0,
             bottom: 0,
             height: 5,
