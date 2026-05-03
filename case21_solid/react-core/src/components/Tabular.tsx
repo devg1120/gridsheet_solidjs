@@ -48,10 +48,11 @@ export const Tabular = () => {
   const [virtualized, setVirtualized] = createSignal<Virtualization | null>(
     null,
   );
-
+/*
   createEffect(() => {
     console.log("virtualized: ", virtualized());
   });
+*/
 
   const handleMouseMove = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -59,7 +60,7 @@ export const Tabular = () => {
   };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    console.log("scroll");
+    //console.log("scroll");
     if (table) {
       //console.log(virtualize(table, e.currentTarget));
       setVirtualized(virtualize(table, e.currentTarget));
@@ -330,8 +331,8 @@ export const Tabular = () => {
 
   const sum_top_hight = (y: number) => {
     let height = 0;
-    if (tableRef.current) {
-      let ele = tableRef.current.querySelector("#CR");
+    if (tableRef) {
+      let ele = tableRef.querySelector("#CR");
       if (ele && ele.clientHeight) {
         height += ele?.clientHeight + 1;
       }
@@ -339,8 +340,8 @@ export const Tabular = () => {
       for (let i = 1; i < y; i++) {
         const rowId = y2r(y);
         const id = `RH-${rowId}`;
-        if (tableRef.current) {
-          let ele = tableRef.current.querySelector("#" + id);
+        if (tableRef) {
+          let ele = tableRef.querySelector("#" + id);
           if (ele) {
             height += ele.clientHeight + 1;
           }
@@ -352,15 +353,15 @@ export const Tabular = () => {
 
   const sum_left_width = (x: number) => {
     let width = 10; // 10
-    if (tableRef.current) {
-      let ele = tableRef.current.querySelector("#CR");
+    if (tableRef) {
+      let ele = tableRef.querySelector("#CR");
       //width -= ele?.clientWidth;
       width -= table.headerWidth;
       for (let i = 1; i <= x; i++) {
         const colId = x2c(x);
         const id = `CH-${colId}`;
-        if (tableRef.current) {
-          let ele = tableRef.current.querySelector("#" + id);
+        if (tableRef) {
+          let ele = tableRef.querySelector("#" + id);
           //console.log(ele)
           if (ele) {
             width += ele?.clientWidth;
@@ -375,15 +376,15 @@ export const Tabular = () => {
 
   const sum_left_top_width = (x: number) => {
     let width = 10; // 10
-    if (tableRef.current) {
-      let ele = tableRef.current.querySelector("#CR");
+    if (tableRef) {
+      let ele = tableRef.querySelector("#CR");
       //width -= ele?.clientWidth;
       width -= table.headerWidth;
       for (let i = 1; i <= x; i++) {
         const colId = x2c(x);
         const id = `CH-${colId}`;
-        if (tableRef.current) {
-          let ele = tableRef.current.querySelector("#" + id);
+        if (tableRef) {
+          let ele = tableRef.querySelector("#" + id);
           //console.log(ele)
           if (ele) {
             width += ele?.clientWidth;
@@ -507,7 +508,7 @@ export const Tabular = () => {
       return false;
     }
   };
-  //          console.log("== w",table.totalWidth)
+            console.log("== w",table.headerWidth)
   //          console.log("== h",table.totalHeight)
 
   return (
@@ -562,7 +563,7 @@ export const Tabular = () => {
                 <th
                   class="gs-adjuster gs-adjuster-horizontal gs-adjuster-horizontal-left"
                   //style={{ width: virtualized()?.adjuster?.left ?? 1}}
-                  style={{ width: (virtualized()?.adjuster?.left ?? 1) + "px" }}
+                  style={{ width: (virtualized()?.adjuster?.left ?? 1) + "px" }} //ヨコMAX
                 ></th>
                 {/*
                 {virtualized?.xs?.map?.((x) => <HeaderCellTop x={x} key={x} />)}
@@ -588,7 +589,7 @@ export const Tabular = () => {
                 <th
                   class={`gs-adjuster gs-adjuster-horizontal gs-adjuster-vertical`}
                   //style={{ width: virtualized()?.adjuster?.top ?? 1}}
-                  style={{ width: (virtualized()?.adjuster?.top ?? 1) + "px" }}
+                  //style={{ width: (virtualized()?.adjuster?.top ?? 1) + "px" }}   //TODO
                 ></th>
                 <td class="gs-adjuster gs-adjuster-vertical"></td>
 
@@ -613,7 +614,6 @@ export const Tabular = () => {
                     {virtualized()?.xs?.map((x) => {
                       if (isSkip(x, y)) {
                         //return <></>;
-                        //console.log("skip",x,y);
                         return;
                       }
 

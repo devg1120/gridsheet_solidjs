@@ -214,7 +214,7 @@ export const HeaderCellTop = ({ x, isFreeze, freezeStyle }) => {
 
       style={mergeProps(
         {
-          width: width + "px",
+          "width": width + "px",
           "min-width": width + "px",
           "max-width": width + "px",
         },

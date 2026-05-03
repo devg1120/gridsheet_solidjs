@@ -55,8 +55,6 @@ export const virtualize = (
     boundaryRight = table.getNumCols();
 
   const { top, left, bottom, right } = getScreenRect(e);
-  console.log(top, left, bottom, right);
-  //console.log(getScreenRect(e));
   let width = 0,
     height = 0;
   for (let x = 1; x <= table.getNumCols(); x++) {
