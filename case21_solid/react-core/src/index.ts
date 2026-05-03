@@ -7,54 +7,54 @@ export {
 */
 
 export {
-    GridSheetPassive, //GUSA  GSF
+  GridSheetPassive, //GUSA  GSF
 } from "./components/GridSheetPassive";
 
 export { Renderer } from "./renderers/core";
 export type {
-    RendererMixinType,
-    RendererCallProps,
-    RenderProps,
+  RendererMixinType,
+  RendererCallProps,
+  RenderProps,
 } from "./renderers/core";
 export { Parser } from "./parsers/core";
 export type { ParserMixinType } from "./parsers/core";
 export {
-    oa2aa,
-    aa2oa,
-    buildInitialCells,
-    buildInitialCellsFromOrigin,
-    zoneToArea,
-    areaToZone,
-    areaToRange,
+  oa2aa,
+  aa2oa,
+  buildInitialCells,
+  buildInitialCellsFromOrigin,
+  zoneToArea,
+  areaToZone,
+  areaToRange,
 } from "./lib/structs";
 
 export { TimeDelta } from "./lib/time";
 export { x2c, c2x, y2r, r2y, p2a, a2p } from "./lib/converters";
 export { updateTable } from "./store/actions";
 export {
-    PluginBase,
-    useInitialPluginContext,
-    usePluginContext,
+  PluginBase,
+  useInitialPluginContext,
+  usePluginContext,
 } from "./components/PluginBase";
 export type {
-    MatrixType,
-    CellType,
-    FeedbackType,
-    OptionsType,
-    WriterType,
-    CellsByAddressType,
-    CellsByIdType,
-    ModeType,
-    HeadersType,
-    HistoryType,
-    StoreType,
-    PointType,
-    AreaType,
-    ZoneType,
-    Props,
-    Connector,
-    EditorEvent,
-    CursorStateType,
+  MatrixType,
+  CellType,
+  FeedbackType,
+  OptionsType,
+  WriterType,
+  CellsByAddressType,
+  CellsByIdType,
+  ModeType,
+  HeadersType,
+  HistoryType,
+  StoreType,
+  PointType,
+  AreaType,
+  ZoneType,
+  Props,
+  Connector,
+  EditorEvent,
+  CursorStateType,
 } from "./types";
 
 export type { HubType, HubProps, WireProps, TransmitProps } from "./lib/hub";
@@ -78,11 +78,11 @@ export { makeBorder } from "./styles/utils";
 export { syncers } from "./store/dispatchers";
 
 export {
-    ensureString,
-    ensureNumber,
-    ensureBoolean,
+  ensureString,
+  ensureNumber,
+  ensureBoolean,
 } from "./formula/functions/__utils";
 export type {
-    EnsureNumberOptions,
-    EnsureBooleanOptions,
+  EnsureNumberOptions,
+  EnsureBooleanOptions,
 } from "./formula/functions/__utils";

@@ -54,6 +54,8 @@ export const virtualize = (
     boundaryRight = table.getNumCols();
 
   const { top, left, bottom, right } = getScreenRect(e);
+  console.log( top, left, bottom, right)
+
   let width = 0,
     height = 0;
   for (let x = 1; x <= table.getNumCols(); x++) {
@@ -83,7 +85,8 @@ export const virtualize = (
   
   const ys = range(boundaryTop, boundaryBottom);
   const xs = range(boundaryLeft, boundaryRight);
-
+   //console.log(boundaryTop, boundaryBottom);
+   //console.log(ys);
   //GUSA
   /*
   if (ys[0] != 1) {

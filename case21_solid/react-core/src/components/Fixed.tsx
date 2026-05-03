@@ -4,23 +4,23 @@ import { Portal } from "solid-js/web";
 import { JSXElement } from "solid-js";
 
 type Props = {
-    className?: string;
-    style?: CSSProperties;
-    children: JSXElement;
-    [attr: string]: any;
+  className?: string;
+  style?: CSSProperties;
+  children: JSXElement;
+  [attr: string]: any;
 };
 
 export const Fixed: FC<Props> = ({
-    children,
-    style,
-    className = "",
-    ...attrs
+  children,
+  style,
+  className = "",
+  ...attrs
 }) => {
-    const { document } = useBrowser();
-    if (document == null) {
-        return null;
-    }
-   /*
+  const { document } = useBrowser();
+  if (document == null) {
+    return null;
+  }
+  /*
     return createPortal(
         <div {...attrs} class={`gs-fixed ${className}`} style={style}>
             {children}
@@ -28,10 +28,10 @@ export const Fixed: FC<Props> = ({
         document.body,
     );
     */
-        <Portal>
-        <div {...attrs} class={`gs-fixed ${className}`} style={style}>
-            {children}
-        </div>,
-        </Portal>
-
+  <Portal>
+    <div {...attrs} class={`gs-fixed ${className}`} style={style}>
+      {children}
+    </div>
+    ,
+  </Portal>;
 };

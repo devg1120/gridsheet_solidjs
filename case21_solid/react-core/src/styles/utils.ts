@@ -1,35 +1,35 @@
 type BorderStyleValue = string;
 
 interface BorderOptions {
-    /**
-     * Border CSS value to apply uniformly to all sides.
-     * Individual sides (top, right, etc.) will override this if specified.
-     *
-     * Example: "1px solid #000"
-     */
-    all?: BorderStyleValue;
+  /**
+   * Border CSS value to apply uniformly to all sides.
+   * Individual sides (top, right, etc.) will override this if specified.
+   *
+   * Example: "1px solid #000"
+   */
+  all?: BorderStyleValue;
 
-    /**
-     * Border CSS value for the top side.
-     *
-     * Example: "2px dashed red"
-     */
-    top?: BorderStyleValue;
+  /**
+   * Border CSS value for the top side.
+   *
+   * Example: "2px dashed red"
+   */
+  top?: BorderStyleValue;
 
-    /**
-     * Border CSS value for the right side.
-     */
-    right?: BorderStyleValue;
+  /**
+   * Border CSS value for the right side.
+   */
+  right?: BorderStyleValue;
 
-    /**
-     * Border CSS value for the bottom side.
-     */
-    bottom?: BorderStyleValue;
+  /**
+   * Border CSS value for the bottom side.
+   */
+  bottom?: BorderStyleValue;
 
-    /**
-     * Border CSS value for the left side.
-     */
-    left?: BorderStyleValue;
+  /**
+   * Border CSS value for the left side.
+   */
+  left?: BorderStyleValue;
 }
 
 /**
@@ -53,25 +53,25 @@ interface BorderOptions {
  * // → { borderTop: "2px dashed red", borderLeft: "1px solid blue" }
  */
 export function makeBorder(options: BorderOptions): CSSProperties {
-    const result: CSSProperties = {};
+  const result: CSSProperties = {};
 
-    const all = options.all;
+  const all = options.all;
 
-    if (options.top ?? all) {
-        result.borderTop = options.top ?? all;
-    }
+  if (options.top ?? all) {
+    result.borderTop = options.top ?? all;
+  }
 
-    if (options.right ?? all) {
-        result.borderRight = options.right ?? all;
-    }
+  if (options.right ?? all) {
+    result.borderRight = options.right ?? all;
+  }
 
-    if (options.bottom ?? all) {
-        result.borderBottom = options.bottom ?? all;
-    }
+  if (options.bottom ?? all) {
+    result.borderBottom = options.bottom ?? all;
+  }
 
-    if (options.left ?? all) {
-        result.borderLeft = options.left ?? all;
-    }
+  if (options.left ?? all) {
+    result.borderLeft = options.left ?? all;
+  }
 
-    return result;
+  return result;
 }

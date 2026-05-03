@@ -60,7 +60,9 @@ export const Tabular = () => {
 
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
+       console.log("scroll");
       if (table) {
+        console.log(virtualize(table, e.currentTarget));
         setVirtualized(virtualize(table, e.currentTarget));
       }
     },
@@ -157,8 +159,8 @@ export const Tabular = () => {
     ...palette,
     ...table.wire.paletteBySheetName[table.sheetName],
   });
-    console.log("operationStyles", operationStyles);
-    console.log("table", table);
+  //  console.log("operationStyles", operationStyles);
+  //  console.log("table", table);
 
   /*
   const setStyle = (x,y) => {
@@ -495,6 +497,9 @@ export const Tabular = () => {
              return false;
       }
   }
+
+            console.log("== w",table.totalWidth)    
+            console.log("== h",table.totalHeight)
 
   return (
     <>

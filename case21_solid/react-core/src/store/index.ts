@@ -7,17 +7,16 @@ export type Dispatcher = React.Dispatch<{
 }>;
 */
 
-export type Dispatcher ={
-    type: number;
-    value: any;
+export type Dispatcher = {
+  type: number;
+  value: any;
 };
 
 export const Context = createContext(
-    {} as {
-        store: StoreType;
-        dispatch: Dispatcher;
-    },
+  {} as {
+    store: StoreType;
+    dispatch: Dispatcher;
+  },
 );
 
 //console.log(Context)
-

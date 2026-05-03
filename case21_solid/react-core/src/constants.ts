@@ -20,18 +20,18 @@ export const OVERSCAN_Y = 10;
 export const DEFAULT_ALPHABET_CACHE_SIZE = 1000;
 
 export class Special {
-    public name: string;
-    constructor(name: string) {
-        this.name = name;
-    }
+  public name: string;
+  constructor(name: string) {
+    this.name = name;
+  }
 }
 
 export const SECONDS_IN_DAY = 86400;
 export const FULLDATE_FORMAT_UTC = "YYYY-MM-DDTHH:mm:ss.SSSZ";
 
 export const RESET_ZONE: ZoneType = {
-    startY: -1,
-    startX: -1,
-    endY: -1,
-    endX: -1,
+  startY: -1,
+  startX: -1,
+  endY: -1,
+  endX: -1,
 };

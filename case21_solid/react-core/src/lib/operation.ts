@@ -21,7 +21,7 @@ export const NoOperation: operations = 0;
 export const Move: operations = MoveFrom | MoveTo; // 192
 
 export const Update: operations =
-    Write | Style | Copy | Resize | SetRenderer | SetParser | SetPolicy; // 7936
+  Write | Style | Copy | Resize | SetRenderer | SetParser | SetPolicy; // 7936
 
 export const InsertRows: operations = InsertRowsAbove | InsertRowsBelow; // 12
 
@@ -34,56 +34,56 @@ export const Delete: operations = RemoveRows | RemoveCols; // 3
 export const ReadOnly: operations = Update | Delete | Add | Move; //
 
 export const hasOperation = (
-    operation: operations | undefined,
-    flag: operations,
+  operation: operations | undefined,
+  flag: operations,
 ) => {
-    if (operation === undefined) {
-        return false;
-    }
-    return (operation & flag) === flag;
+  if (operation === undefined) {
+    return false;
+  }
+  return (operation & flag) === flag;
 };
 
 // Don't use this function in production
 export const debugOperations = (prevention: operations | undefined) => {
-    const operations: string[] = [];
-    if (hasOperation(prevention, RemoveRows)) {
-        operations.push("RemoveRow");
-    }
-    if (hasOperation(prevention, RemoveCols)) {
-        operations.push("RemoveCol");
-    }
-    if (hasOperation(prevention, InsertRowsAbove)) {
-        operations.push("InsertRowAbove");
-    }
-    if (hasOperation(prevention, InsertRowsBelow)) {
-        operations.push("InsertRowBelow");
-    }
-    if (hasOperation(prevention, InsertColsLeft)) {
-        operations.push("InsertColLeft");
-    }
-    if (hasOperation(prevention, InsertColsRight)) {
-        operations.push("InsertColRight");
-    }
-    if (hasOperation(prevention, MoveFrom)) {
-        operations.push("MoveFrom");
-    }
-    if (hasOperation(prevention, MoveTo)) {
-        operations.push("MoveTo");
-    }
-    if (hasOperation(prevention, Write)) {
-        operations.push("Write");
-    }
-    if (hasOperation(prevention, Style)) {
-        operations.push("Style");
-    }
-    if (hasOperation(prevention, Resize)) {
-        operations.push("Resize");
-    }
-    if (hasOperation(prevention, SetRenderer)) {
-        operations.push("SetRenderer");
-    }
-    if (hasOperation(prevention, SetParser)) {
-        operations.push("SetParser");
-    }
-    return operations;
+  const operations: string[] = [];
+  if (hasOperation(prevention, RemoveRows)) {
+    operations.push("RemoveRow");
+  }
+  if (hasOperation(prevention, RemoveCols)) {
+    operations.push("RemoveCol");
+  }
+  if (hasOperation(prevention, InsertRowsAbove)) {
+    operations.push("InsertRowAbove");
+  }
+  if (hasOperation(prevention, InsertRowsBelow)) {
+    operations.push("InsertRowBelow");
+  }
+  if (hasOperation(prevention, InsertColsLeft)) {
+    operations.push("InsertColLeft");
+  }
+  if (hasOperation(prevention, InsertColsRight)) {
+    operations.push("InsertColRight");
+  }
+  if (hasOperation(prevention, MoveFrom)) {
+    operations.push("MoveFrom");
+  }
+  if (hasOperation(prevention, MoveTo)) {
+    operations.push("MoveTo");
+  }
+  if (hasOperation(prevention, Write)) {
+    operations.push("Write");
+  }
+  if (hasOperation(prevention, Style)) {
+    operations.push("Style");
+  }
+  if (hasOperation(prevention, Resize)) {
+    operations.push("Resize");
+  }
+  if (hasOperation(prevention, SetRenderer)) {
+    operations.push("SetRenderer");
+  }
+  if (hasOperation(prevention, SetParser)) {
+    operations.push("SetParser");
+  }
+  return operations;
 };

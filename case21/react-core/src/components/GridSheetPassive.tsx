@@ -216,11 +216,13 @@ export function GridSheetPassive({
   return (
     <Context.Provider value={{ store, dispatch }}>
       <div
-        className={`gs-root1 ${wire.ready ? "gs-initialized" : ""}`}
+        //className={`gs-root1 ${wire.ready ? "gs-initialized" : ""}`}
+        className={`gs-rootgusa ${wire.ready ? "gs-initialized" : ""}`}
         ref={rootRef}
         data-sheet-name={sheetName}
         data-mode={mode}
       >
+{/*
         <ScrollHandle style={{ position: "fixed", top: 0, left: 0 }} />
         <ScrollHandle
           style={{
@@ -242,7 +244,7 @@ export function GridSheetPassive({
           }}
           vertical={1}
         />
-
+*/}
         {typeof store.searchQuery === "undefined" ? (
           showFormulaBar && <FormulaBar ready={wire.ready} />
         ) : (
