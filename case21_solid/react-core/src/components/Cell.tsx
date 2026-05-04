@@ -144,6 +144,7 @@ export const Cell: FC<Props> = ({
   const editingAnywhere = !!(table.wire.editingAddress || editingAddress);
 
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+   console.log("handler handleDragStart");
     e.stopPropagation();
     safePreventDefault(e);
 
@@ -197,11 +198,13 @@ export const Cell: FC<Props> = ({
     }
     if (!e.shiftKey) {
       dispatch(choose({ y, x }));
+      console.log("dispatch choose")
     }
     return true;
   };
 
   const handleDragEnd = (e: React.MouseEvent | React.TouchEvent) => {
+    console.log("handler handleDragEnd");
     e.stopPropagation();
     if (e.type.startsWith("touch")) {
       return;
@@ -220,6 +223,7 @@ export const Cell: FC<Props> = ({
   };
 
   const handleDragging = (e: React.MouseEvent | React.TouchEvent) => {
+    console.log("handler handleDragging");
     if (!isTouching(e)) {
       return false;
     }
@@ -259,6 +263,7 @@ export const Cell: FC<Props> = ({
   };
 
   const handleAutofillMouseDown = (e: React.MouseEvent) => {
+    console.log("handler handleAutofillMouseDown");
     dispatch(setAutofillDraggingTo({ x, y }));
     dispatch(setDragging(true));
     e.stopPropagation();
@@ -266,6 +271,7 @@ export const Cell: FC<Props> = ({
 
   // --- Memoize event handlers with useCallback ---
   const onContextMenu = (e: React.MouseEvent<HTMLTableCellElement>) => {
+    console.log("handler onContextMenu");
     if (contextMenuItems.length > 0) {
       e.stopPropagation();
       safePreventDefault(e);
@@ -276,6 +282,7 @@ export const Cell: FC<Props> = ({
   };
 
   const onDoubleClick = (e: React.MouseEvent<HTMLTableCellElement>) => {
+    console.log("handler onDoubleClick");
     e.stopPropagation();
     safePreventDefault(e);
     setEditingAddress(address);

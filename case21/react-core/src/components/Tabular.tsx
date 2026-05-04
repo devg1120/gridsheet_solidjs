@@ -498,8 +498,8 @@ export const Tabular = () => {
       }
   }
 
-            console.log("== w",table.totalWidth)    
-            console.log("== h",table.totalHeight)
+            //console.log("== w",table.totalWidth)    
+            //console.log("== h",table.totalHeight)
 
   return (
     <>

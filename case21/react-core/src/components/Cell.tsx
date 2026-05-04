@@ -138,9 +138,10 @@ export const Cell: FC<Props> = memo(
 
     const handleDragStart = useCallback(
       (e: React.MouseEvent | React.TouchEvent) => {
+      console.log("handler handleDragStart");
         e.stopPropagation();
         safePreventDefault(e);
-
+      
         if (!isTouching(e)) {
           return false;
         }
@@ -207,6 +208,7 @@ export const Cell: FC<Props> = memo(
 
     const handleDragEnd = useCallback(
       (e: React.MouseEvent | React.TouchEvent) => {
+      console.log("handler handleDragEnd");
         e.stopPropagation();
         if (e.type.startsWith("touch")) {
           return;
@@ -228,6 +230,7 @@ export const Cell: FC<Props> = memo(
 
     const handleDragging = useCallback(
       (e: React.MouseEvent | React.TouchEvent) => {
+      console.log("handler handleDragging");
         if (!isTouching(e)) {
           return false;
         }
@@ -278,6 +281,7 @@ export const Cell: FC<Props> = memo(
     );
 
     const handleAutofillMouseDown = useCallback((e: React.MouseEvent) => {
+      console.log("handler handleAutofillMouseDown");
       dispatch(setAutofillDraggingTo({ x, y }));
       dispatch(setDragging(true));
       e.stopPropagation();
@@ -286,6 +290,7 @@ export const Cell: FC<Props> = memo(
     // --- Memoize event handlers with useCallback ---
     const onContextMenu = useCallback(
       (e: React.MouseEvent<HTMLTableCellElement>) => {
+      console.log("handler onContextMenu");
         if (contextMenuItems.length > 0) {
           e.stopPropagation();
           safePreventDefault(e);
@@ -299,6 +304,7 @@ export const Cell: FC<Props> = memo(
 
     const onDoubleClick = useCallback(
       (e: React.MouseEvent<HTMLTableCellElement>) => {
+      console.log("handler onDoubleClick");
         e.stopPropagation();
         safePreventDefault(e);
         setEditingAddress(address);
