@@ -71,13 +71,13 @@ const App  = () => {
 
     //                ...makeBorder({
     let spans: CellsByAddressType = {
-        E5: { colsize: 2, style: { backgroundColor: "#ffff99" } },
-        E6: { colsize: 3, style: { backgroundColor: "#ffff99" } },
-        I5: { rowsize: 2, style: { backgroundColor: "#ffff99" } },
-        J5: { rowsize: 3, style: { backgroundColor: "#ffff99" } },
-        C10: { rowsize: 2, style: { backgroundColor: "#99ccff" } },
-        D18: { rowsize: 2, colsize: 2, style: { backgroundColor: "#99ccff" } },
-        //F12: {colsize: 3, rowsize: 3, style:{ backgroundColor: "#ffccff", border:"solid red 2px"}},
+        E5: { colsize: 2, style: { "background-color": "#ffff99" } },
+        E6: { colsize: 3, style: { "background-color": "#ffff99" } },
+        I5: { rowsize: 2, style: { "background-color": "#ffff99" } },
+        J5: { rowsize: 3, style: { "background-color": "#ffff99" } },
+        C10: { rowsize: 2, style: { "background-color": "#99ccff" } },
+        D18: { rowsize: 2, colsize: 2, style: { "background-color": "#99ccff" } },
+        //F12: {colsize: 3, rowsize: 3, style:{ "background-color": "#ffccff", border:"solid red 2px"}},
         F12: {
             colsize: 3,
             rowsize: 3,
@@ -134,10 +134,10 @@ const App  = () => {
     cells["E4"] = {
         value: "OK",
         style: {
-            backgroundImage: 'url(\"./top2bottom.svg\")',
-            backgroundRepeat: "no-repeat" /* 繰り返さない */,
-            backgroundSize: "cover",
-      /* 要素全体を覆うように拡大縮小（はみ出しは隠す） */ backgroundPosition:
+            "background-image": 'url(\"./top2bottom.svg\")',
+            "background-repeat": "no-repeat" /* 繰り返さない */,
+            "background-size": "cover",
+      /* 要素全体を覆うように拡大縮小（はみ出しは隠す） */ "background-position":
                 "center" /* 中央に配置 */,
         },
     };
@@ -206,22 +206,22 @@ const App  = () => {
     ((cells["D9"] = {
         value: "価格",
         style: {
-            textAlign: "right",
-            verticalAlign: "top",
+            "text-align": "right",
+            "vertical-align": "top",
         },
     }),
         (cells["E9"] = {
             value: "コード",
             style: {
-                textAlign: "center",
-                verticalAlign: "center",
+                "text-align": "center",
+                "vertical-align": "center",
             },
         }),
         (cells["F9"] = {
             value: "商品",
             style: {
-                textAlign: "left",
-                verticalAlign: "bottom",
+                "text-align": "left",
+                "vertical-align": "bottom",
             },
         }),
         table().initialize(cells));
