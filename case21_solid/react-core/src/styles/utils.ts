@@ -58,19 +58,20 @@ export function makeBorder(options: BorderOptions): CSSProperties {
   const all = options.all;
 
   if (options.top ?? all) {
-    result.borderTop = options.top ?? all;
+    //result.borderTop = options.top ?? all;
+    result["border-top"] = options.top ?? all;
   }
 
   if (options.right ?? all) {
-    result.borderRight = options.right ?? all;
+    result["border-right"] = options.right ?? all;
   }
 
   if (options.bottom ?? all) {
-    result.borderBottom = options.bottom ?? all;
+    result["border-bottom"] = options.bottom ?? all;
   }
 
   if (options.left ?? all) {
-    result.borderLeft = options.left ?? all;
+    result["border-left"] = options.left ?? all;
   }
 
   return result;

@@ -82,7 +82,7 @@ const App  = () => {
             colsize: 3,
             rowsize: 3,
             style: {
-                backgroundColor: "#ffccff",
+                "background-color": "#ffccff",
                 ...makeBorder({
                     bottom: "solid red 2px",
                     top: "solid red 2px",
