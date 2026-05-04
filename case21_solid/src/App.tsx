@@ -144,9 +144,9 @@ const App  = () => {
     cells["C4"] = {
         value: "OK",
         style: {
-            backgroundImage: 'url(\"./bottom2top.svg\")',
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
+            "background-image": 'url(\"./bottom2top.svg\")',
+            "background-repeat": "no-repeat",
+            "background-size": "cover",
         },
     };
 
@@ -164,9 +164,9 @@ const App  = () => {
 
     cells["G9"] = {
         style: {
-            backgroundImage: image2,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
+            "background-image": image2,
+            "background-repeat": "no-repeat",
+            "background-size": "cover",
         },
     };
 
