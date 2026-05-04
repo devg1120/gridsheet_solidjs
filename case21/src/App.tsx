@@ -41,7 +41,9 @@ const App: React.FC = () => {
       console.log(`Table initialized: ${table.sheetName}`);
     },
   };
+  console.log(hubProps);
   const hub = useHub(hubProps);
+   console.log("hub", hub)
 
   useEffect(() => {
     hubProps.labelers!.decimal = enableDecimalLabeler
@@ -173,7 +175,7 @@ HEADER_WIDTH = 50;
       backgroundSize: "cover",
     },
   };
-
+   console.log("hub", hub)
   const { wire } = hub;
 
   let minNumRows = 1;

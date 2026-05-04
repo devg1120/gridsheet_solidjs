@@ -64,10 +64,11 @@ export function GridSheetPassive({
   //const internalConnector = useConnector();   //TODO
   //const connector = connector ?? internalConnector;  //TODO
 
-  const internalHub = useHub({});
+  //const internalHub = useHub({});
   //const hub = hub ?? internalHub;
-  const hub = internalHub; //TODO
-
+  //const hub = internalHub; //TODO
+  const hub = initialHub;
+  //console.log("wire", hub().wire);
   // useRef to manage sheetId and avoid Strict Mode issues
   //const sheetIdRef = useRef<number | null>(null);
   //if (sheetIdRef === null) {                                        //PeD
@@ -104,10 +105,10 @@ export function GridSheetPassive({
             });
         */
     table.sheetId = sheetId;
-    hub.wire.sheetIdsByName[sheetName] = sheetId;
+    hub().wire.sheetIdsByName[sheetName] = sheetId;
 
     //GUSA table.initialize(initialCells);
-    hub.wire.onInit?.({ table: table });
+    hub().wire.onInit?.({ table: table });
 
     //table.setTotalSize();
     //tableReactive.current = (params.table as Table);
@@ -132,8 +133,8 @@ export function GridSheetPassive({
       editingAddress: "",
       editorRect: { y: 0, x: 0, height: 0, width: 0 },
       dragging: false,
-      sheetHeight: 500,
-      sheetWidth: 500,
+      sheetHeight: 400,
+      sheetWidth: 800,
       entering: false,
       matchingCells: [],
       matchingCellIndex: 0,
@@ -186,8 +187,10 @@ export function GridSheetPassive({
 
   //console.log(sheetHeight());
 
+
   const [sheetWidth, setSheetWidth] = createSignal(options?.sheetWidth || 800);
-  //console.log(sheetWidth());
+
+  //console.log("showFormulaBar", showFormulaBar, hub().wire.ready);
 
   return (
     <Context.Provider
@@ -198,7 +201,7 @@ export function GridSheetPassive({
     >
       <div
         //class={`gs-root1 ${hub.wire.ready ? "gs-initialized" : ""}`}
-        class={`gs-root-gusa ${hub.wire.ready ? "gs-initialized" : ""}`}
+        class={`gs-root-gusa ${hub().wire.ready ? "gs-initialized" : ""}`}
         ref={rootRef}
         data-sheet-name={sheetName}
         data-mode={mode}
@@ -232,10 +235,12 @@ export function GridSheetPassive({
         />
 
         {typeof store.searchQuery === "undefined" ? (
-          showFormulaBar && <FormulaBar ready={hub.wire.ready} />
+          showFormulaBar && <FormulaBar ready={hub().wire.ready} />
         ) : (
           <SearchBar />
         )}
+
+
 
         <div
           class={`gs-main ${className || ""}`}

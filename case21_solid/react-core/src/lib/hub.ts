@@ -110,7 +110,7 @@ export class Wire {
     for (let i = 0; i < keys.length; i++) {
       const sheetId = keys[i];
       const storeDispatch = this.contextsBySheetId[sheetId];
-      const table = storeDispatch.store.tableReactive;
+      const table = storeDispatch.store().tableReactive;
       if (!table || table.status === 0) {
         return;
       }
@@ -194,16 +194,17 @@ export type HubType = {
 };
 
 export const createHub = (props: WireProps = {}): HubType => {
+  //console.log(createWire(props)) ;
   return { wire: createWire(props) };
 };
 
 export const useHub = (props: WireProps = {}) => {
   //const [hub, setHub] = createSignal<HubType>(() => createHub(props));
-  const hub_ = createHub(props);
+
+  const hub_ =  createHub(props);
   const [hub, setHub] = createSignal<HubType>(hub_);
-  //console.log(hub_);
-  //console.log(hub());
   const wire = hub().wire;
+  wire.ready = true;              //TODO
 
   wire.transmit = (patch?: TransmitProps) => {
     Object.assign(wire, patch);
@@ -222,5 +223,6 @@ export const useHub = (props: WireProps = {}) => {
     ),
   );
 
-  return hub();
+  //return hub();
+  return hub;
 };

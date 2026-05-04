@@ -32,7 +32,9 @@ const App  = () => {
             console.log(`Table initialized: ${table.sheetName}`);
         },
     };
+    console.log(hubProps);
     const hub = useHub(hubProps);
+    console.log("hub", hub)
 
     createEffect(on(
         () => [enableDecimalLabeler()],
@@ -40,7 +42,7 @@ const App  = () => {
             hubProps.labelers!.decimal = enableDecimalLabeler()
                 ? (n: number) => String(n)
                 : null;
-            hub.wire.transmit(hubProps);
+            hub().wire.transmit(hubProps);
         }
     ));
 
@@ -168,7 +170,8 @@ const App  = () => {
         },
     };
 
-    const { wire } = hub;
+
+    const { wire } = hub();
 
     let minNumRows = 1;
     let maxNumRows = -1;
