@@ -47,7 +47,7 @@ type Props = {
 };
 
 export const Editor: Component<Props> = ({ mode }: Props) => {
-  const { store, dispatch } = useContext(Context);
+  const { store, dispatch }    = useContext(Context);
   const [selected, setSelected] = createSignal(0);
   const [shiftKey, setShiftKey] = createSignal(false);
   let {
@@ -68,9 +68,9 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
     sheetId,
   } = store();
 
-  const [choosing, setChoosing] = createSignal(store().choosing);
-  const [inputting, setInputting] = createSignal(store().inputting);
-  const [editingAddress, setEditingAddress] = createSignal(store().editingAddress);
+  const [choosing, _setChoosing] = createSignal(store().choosing);
+  const [inputting, _setInputting] = createSignal(store().inputting);
+  const [editingAddress, _setEditingAddress] = createSignal(store().editingAddress);
 
   createEffect(() => {
 /*
@@ -96,9 +96,9 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
   console.log(store().choosing);
   console.log(store().editingAddress);
 
-  setChoosing(store().choosing);
-  setInputting(store().inputting);
-  setEditingAddress(store().editingAddress);
+  _setChoosing(store().choosing);
+  _setInputting(store().inputting);
+  _setEditingAddress(store().editingAddress);
 
 });
 
@@ -471,7 +471,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
         if (e.ctrlKey || e.metaKey) {
           if (!editing) {
             e.preventDefault();
-            const area = clip(store);
+            const area = clip(store());
             dispatch(copy(areaToZone(area)));
             input.focus(); // refocus
             return false;
@@ -535,7 +535,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
         if (e.ctrlKey || e.metaKey) {
           if (!editing) {
             e.preventDefault();
-            const area = clip(store);
+            const area = clip(store());
             dispatch(cut(areaToZone(area)));
             input.focus(); // refocus
 
@@ -649,7 +649,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
 
   const handleKeyUpInternal = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     setShiftKey(false);
-    const selectingArea = zoneToArea(store.selectingZone);
+    const selectingArea = zoneToArea(store().selectingZone);
     table.wire.onKeyUp?.({
       e,
       points: {
