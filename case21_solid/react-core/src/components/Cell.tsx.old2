@@ -141,7 +141,9 @@ export const Cell: FC<Props> = ({
     // TODO: debug flag
   }
   const input = editorRef;
+
   const editingAnywhere = !!(table.wire.editingAddress || editingAddress);
+
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     //console.log("handleDragStart")
    
@@ -298,22 +300,9 @@ export const Cell: FC<Props> = ({
     safePreventDefault(e);
     setEditingAddress(address);
     const dblclick = document.createEvent("MouseEvents");
-    dblclick.initEvent("dblclick", true, false);
-
-const dblclick2 = new MouseEvent('dblclick', {
-  bubbles: true,
-  cancelable: true,
-  view: window,
-});
-    const event = new CustomEvent("myCustomEvent", {
-      detail: { message: "Hello from Child!" },
-      bubbles: true,    // 親にバブリングさせる
-      composed: true,   // Shadow DOMを越えて通信する
-    });
-
+    dblclick.initEvent("dblclick", true, true);
     console.log(input)
-    //input.dispatchEvent(dblclick2);
-    input.dispatchEvent(event);
+    input?.dispatchEvent(dblclick);
     return false;
   };
 
@@ -382,9 +371,10 @@ const dblclick2 = new MouseEvent('dblclick', {
       //onContextMenu={onContextMenu}
       //onDoubleClick={onDoubleClick}
       
-      //onClick={() => console.log('Cell Clicked!',x,y)}
-      //onDblClick={() => console.log('Cell Double Clicked!',x,y)}
+      //onClick={() => console.log(' Clicked!')}
+     
       onClick={handleClick}
+      //onDblClick={() => console.log('Double Clicked!')}
 
       class={`gs-cell ${
         among(selectingArea, {

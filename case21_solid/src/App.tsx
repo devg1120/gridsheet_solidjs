@@ -234,6 +234,8 @@ const App  = () => {
     //style={{ width: 800 }}
     return (
         <main>
+                <br />
+                <br />
             <div class="grid-container">
                 <GridSheetPassive
                     hub={hub}
@@ -269,7 +271,7 @@ const App  = () => {
                 />
 
                 <br />
-
+{/*
                 <GridSheetPassive
                     hub={hub}
                     table={table()}
@@ -280,7 +282,7 @@ const App  = () => {
                     sheetName="Sheet1"
                 //style={{ width: 800, height: 300 }}
                 />
-
+*/}
                 <br />
 {/*
                 <GridSheet

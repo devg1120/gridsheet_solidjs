@@ -6,6 +6,7 @@ import { JSXElement } from "solid-js";
 type Props = {
   className?: string;
   style?: CSSProperties;
+  table: any;
   children: JSXElement;
   [attr: string]: any;
 };
@@ -13,13 +14,18 @@ type Props = {
 export const Fixed: FC<Props> = ({
   children,
   style,
+  table,
   className = "",
   ...attrs
 }) => {
+
+/*
   const { document } = useBrowser();
   if (document == null) {
+     console.log("****************");
     return null;
   }
+  */
   /*
     return createPortal(
         <div {...attrs} class={`gs-fixed ${className}`} style={style}>
@@ -27,11 +33,19 @@ export const Fixed: FC<Props> = ({
         </div>,
         document.body,
     );
-    */
-  <Portal>
-    <div {...attrs} class={`gs-fixed ${className}`} style={style}>
+
+  <Portal mount={document.window}>
+    <div id="gusa" {...attrs} class={`gs-fixed ${className}`} style={style}>
       {children}
     </div>
-    ,
-  </Portal>;
+  </Portal>
+
+    */
+return (
+  <Portal mount={document.body}>
+    <div  {...attrs} class={`gs-fixed ${className}`} style={style}>
+      {children}
+    </div>
+  </Portal>
+ )
 };

@@ -51,6 +51,30 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
   const [selected, setSelected] = createSignal(0);
   const [shiftKey, setShiftKey] = createSignal(false);
   let {
+    //choosing,
+    //inputting,
+    selectingZone,
+    editorRect,
+    //editingAddress,
+    entering,
+    matchingCells,
+    matchingCellIndex,
+    searchQuery,
+    editorRef,
+    largeEditorRef,
+    searchInputRef,
+    editingOnEnter,
+    tableReactive: tableRef,
+    sheetId,
+  } = store();
+
+  const [choosing, setChoosing] = createSignal(store().choosing);
+  const [inputting, setInputting] = createSignal(store().inputting);
+  const [editingAddress, setEditingAddress] = createSignal(store().editingAddress);
+
+  createEffect(() => {
+/*
+   {
     choosing,
     inputting,
     selectingZone,
@@ -66,7 +90,19 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
     editingOnEnter,
     tableReactive: tableRef,
     sheetId,
-  } = store();
+  } 
+*/
+
+  console.log(store().choosing);
+  console.log(store().editingAddress);
+
+  setChoosing(store().choosing);
+  setInputting(store().inputting);
+  setEditingAddress(store().editingAddress);
+
+});
+
+
   const table = tableRef;
   //console.log("Editor", store());
   //let  editorRef = null;
@@ -77,7 +113,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
 
   const policy = table.getPolicyByPoint(choosing);
   const optionsAll = policy.getOptions();
-  const inputLower = inputting.toLocaleLowerCase();
+  const inputLower = inputting().toLocaleLowerCase();
   const filteredOptions = optionsAll
     .map((option) => {
       const keywords = option.keywords ?? [String(option.value)];
@@ -151,14 +187,46 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
   }, [table.wire.lastFocused, editorRef, largeEditorRef, dispatch]);
   createEffect(() => {
     table.wire.editingSheetId = sheetId;
-    table.wire.editingAddress = editingAddress;
-  }, [editingAddress, table, sheetId]);
+    table.wire.editingAddress = editingAddress();
+  } );
 
   createEffect(() => {
     table.wire.transmit();
     expandInput(editorRef);
-  }, [inputting, editingAddress, editorRef]);
+  }) 
 
+
+  let { y, x } = choosing();
+  let rowId = `${y2r(y)}`;
+  let colId = x2c(x);
+  let address = `${colId}${rowId}`;
+  let editing = editingAddress() === address;
+
+  let cell = table.getCellByPoint({ y, x }, "SYSTEM");
+
+  let valueString = table.stringify({
+    point: choosing,
+    cell,
+    refEvaluation: "RAW",
+  });
+
+  createEffect(() => {
+     const { y, x } = choosing();
+     rowId = `${y2r(y)}`;
+     colId = x2c(x);
+     address = `${colId}${rowId}`;
+     editing = editingAddress() === address;
+
+     cell = table.getCellByPoint({ y, x }, "SYSTEM");
+
+     valueString = table.stringify({
+       point: choosing,
+       cell,
+       refEvaluation: "RAW",
+     });
+
+  })
+/*
   const { y, x } = choosing;
   const rowId = `${y2r(y)}`;
   const colId = x2c(x);
@@ -166,11 +234,14 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
   const editing = editingAddress === address;
 
   const cell = table.getCellByPoint({ y, x }, "SYSTEM");
+
   const valueString = table.stringify({
     point: choosing,
     cell,
     refEvaluation: "RAW",
   });
+*/
+
   const [before, setBefore] = createSignal<string>(valueString);
 
   const selectValue = (selected: number) => {
@@ -516,12 +587,14 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
   };
 
   const handleDoubleClick = (e: React.MouseEvent<HTMLTextAreaElement>) => {
+      console.log("Editor handleDoubleClick");
     if (prevention.hasOperation(cell?.prevention, prevention.Write)) {
       console.warn("This cell is protected from writing.");
       return;
     }
     const input = e.currentTarget;
     if (!editing) {
+       console.log("set input", valueString, address)
       dispatch(setInputting(valueString));
       dispatch(setEditingAddress(address));
       requestAnimationFrame(() => {
@@ -609,10 +682,12 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
             }
           : {}
       }
+      table={tableRef}
       {...{
         "data-mode": mode,
         "data-sheet-id": sheetId,
       }}
+
     >
       <div class={`gs-cell-label ${editing ? " gs-hidden" : ""}`}>
         {address}
@@ -626,7 +701,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
             width: (editorRef?.scrollWidth ?? 0) - 4 + "px",
           }}
         >
-          {cell?.disableFormula ? inputting : editorStyle(inputting)}
+          {cell?.disableFormula ? inputting() : editorStyle(inputting())}
         </pre>
 
         <textarea
@@ -639,13 +714,23 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
           ref={_editorRef}
           rows={numLines}
           onFocus={handleFocus}
+	  z-index={10009}
           style={{
-            minWidth: width,
-            minHeight: height,
+            "min-width": width + "px",
+            "min-height": height + "px",
           }}
-          onDoubleClick={handleDoubleClick}
-          onBlur={handleBlur}
-          value={inputting}
+      //onClick={() => console.log('TextArea Clicked!',x,y)}
+      //onDblClick={(e) => console.log('TextArea Double Clicked!',e, x,y)}
+     
+      //on:myCustomEvent={(e) => console.log('TextArea Double Clicked!',e, x,y)}
+      on:myCustomEvent={handleDoubleClick}
+
+          //onDoubleClick={handleDoubleClick}
+          //onDblClick={handleDoubleClick}
+          //ondblclick={handleDoubleClick}
+          //onClick={handleDoubleClick}
+          //onBlur={handleBlur}
+          value={inputting()}
           onChange={handleChange}
           onPaste={handlePaste}
           onKeyDown={handleKeyDown}
