@@ -219,7 +219,7 @@ export const Cell: FC<Props> = ({
   };
 
 
-  const handleClick2 = (e: React.MouseEvent | React.TouchEvent) => {
+  const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
     console.log("handleClick")
    
     e.stopPropagation();
@@ -229,7 +229,6 @@ export const Cell: FC<Props> = ({
       //_setEditorRect(); //TODO
       //dispatch(choose({ y, x }));
       if (pointed && !isFirstPointed) {
-           _setEditorRect(); //TODO
           onDoubleClick(e);
       } else {
       _setEditorRect(); //TODO
@@ -237,21 +236,6 @@ export const Cell: FC<Props> = ({
 
       }
     }
-    return true;
-  };
-
-  const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
-    console.log("handleClick")
-   
-    e.stopPropagation();
-    safePreventDefault(e);
-
-    if (!e.shiftKey) {
-      _setEditorRect(); //TODO
-      dispatch(choose({ y, x }));
-      onDoubleClick(e);
-
-      }
     return true;
   };
 
