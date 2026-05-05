@@ -93,8 +93,8 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
   } 
 */
 
-  console.log(store().choosing);
-  console.log(store().editingAddress);
+  //console.log(store().choosing);
+  //console.log(store().editingAddress);
 
   _setChoosing(store().choosing);
   _setInputting(store().inputting);
@@ -211,11 +211,20 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
   });
 
   createEffect(() => {
+
+     console.log("editorAddress", editingAddress());
+
+
+  })
+
+  createEffect(() => {
      const { y, x } = choosing();
      rowId = `${y2r(y)}`;
      colId = x2c(x);
      address = `${colId}${rowId}`;
+
      editing = editingAddress() === address;
+     console.log(editing , editingAddress() , address);
 
      cell = table.getCellByPoint({ y, x }, "SYSTEM");
 
@@ -669,6 +678,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
     e.stopPropagation();
     return false;
   };
+  console.log("editing", editing)
 
   return (
     <Fixed
@@ -676,9 +686,9 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
       style={
         editing
           ? {
-              top: top,
-              left: left,
-              height: height,
+              top: top + "px",
+              left: left + "px",
+              height: height + "px",
             }
           : {}
       }

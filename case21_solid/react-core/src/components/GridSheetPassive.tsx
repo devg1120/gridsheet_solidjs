@@ -130,7 +130,7 @@ export function GridSheetPassive({
       autofillDraggingTo: null,
       leftHeaderSelecting: false,
       topHeaderSelecting: false,
-      editingAddress: "",
+      editingAddress: "--",
       editorRect: { y: 0, x: 0, height: 0, width: 0 },
       dragging: false,
       sheetHeight: 400,
