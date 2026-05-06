@@ -55,6 +55,7 @@ export const virtualize = (
     boundaryRight = table.getNumCols();
 
   const { top, left, bottom, right } = getScreenRect(e);
+  console.log( top, left, bottom, right )
   let width = 0,
     height = 0;
   for (let x = 1; x <= table.getNumCols(); x++) {
@@ -72,19 +73,37 @@ export const virtualize = (
   for (let y = 1; y <= table.getNumRows(); y++) {
     const h =
       table.getCellByPoint({ y, x: 0 }, "SYSTEM")?.height || DEFAULT_HEIGHT;
-    height += h;
+    //console.log("h",h);
+    height += h ;
     //console.log(height, bottom);
     if (boundaryTop === 0 && height > top) {
       boundaryTop = Math.max(y - OVERSCAN_Y, 1);
     }
-    if (height > bottom) {
+    if (height > bottom*2) {
       boundaryBottom = Math.min(y + OVERSCAN_Y, table.getNumRows());
       break;
     }
   }
 
+      //boundaryTop -= 30;
+      //boundaryBottom += 50;
+
+  console.log(table.getNumRows());  //TODO
+  console.log(table.getNumCols());
   const ys = range(boundaryTop, boundaryBottom);
   const xs = range(boundaryLeft, boundaryRight);
+  //const ys = range(1, table.getNumRows());  //TODO
+  //const xs = range(1, table.getNumCols());
+  //const ys = range(1, 100);  //TODO
+  //const xs = range(1, 20);
+  //const ys = range(1, 499);  //TODO
+  //const xs = range(1, 139);
+  //const ys = range(100, 200);  //TODO
+  //const xs = range(1, 50);
+ 
+  console.log(">>", boundaryTop, boundaryBottom, "=", boundaryBottom - boundaryTop);
+  console.log(ys.length)
+
   //console.log(boundaryTop, boundaryBottom);
   //console.log(ys);
   //GUSA
