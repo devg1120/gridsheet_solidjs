@@ -90,7 +90,7 @@ export const Cell: FC<Props> = ({
     if (rect == null) {
       return null;
     }
-    console.log("_setEditorRect", _cellRef, rect)
+    //console.log("_setEditorRect", _cellRef, rect)
     dispatch(
       setEditorRect({
      
@@ -170,7 +170,19 @@ export const Cell: FC<Props> = ({
     if (!input) {
       return false;
     }
-
+/*
+    if (!e.shiftKey) {
+      //_setEditorRect(); //TODO
+      //dispatch(choose({ y, x }));
+      if (pointed && !isFirstPointed) {
+          _setEditorRect(); //TODO
+          onDoubleClick(e);
+      } else {
+      _setEditorRect(); //TODO
+      isFirstPointed = false;
+      }
+    }
+*/
     // Single cell selection only for touch events
     if (e.type.startsWith("touch")) {
       // Blur the input field to commit current value when selecting via touch
@@ -220,7 +232,7 @@ export const Cell: FC<Props> = ({
 
 
   const handleClick2 = (e: React.MouseEvent | React.TouchEvent) => {
-    console.log("handleClick")
+    console.log("handleClick2")
    
     e.stopPropagation();
     safePreventDefault(e);
@@ -234,7 +246,7 @@ export const Cell: FC<Props> = ({
       } else {
       _setEditorRect(); //TODO
       dispatch(choose({ y, x }));
-
+       //isFirstPointed = false;
       }
     }
     return true;
@@ -249,6 +261,7 @@ export const Cell: FC<Props> = ({
     if (!e.shiftKey) {
       _setEditorRect(); //TODO
       dispatch(choose({ y, x }));
+      //_setEditorRect(); //TODO
       onDoubleClick(e);
 
       }
@@ -440,7 +453,7 @@ const dblclick2 = new MouseEvent('dblclick', {
       //onClick={() => console.log('Cell Clicked!',x,y)}
       //onDblClick={() => console.log('Cell Double Clicked!',x,y)}
       //onDblClick={handleDblClick}
-      onClick={handleClick}
+      onClick={handleClick2}
 
       class={`gs-cell ${
         among(selectingArea, {
@@ -450,7 +463,7 @@ const dblclick2 = new MouseEvent('dblclick', {
           ? "gs-selecting"
           : ""
       } ${pointed ? "gs-choosing" : ""} ${
-        editing ? "gs-editing" : ""
+        editing ? "gs-editing_" : ""
       } ${freeze_y ? "freeze_y" : ""}  ${freeze_x ? "freeze_x" : ""} `}
       style={mergeProps(() => cell?.style, operationStyle, freezeStyle) }
     >

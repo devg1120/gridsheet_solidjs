@@ -229,8 +229,8 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
      _setAddress(`${colId}${rowId}`);
 
      editing = editingAddress() === address();
-     //console.log(editing , editingAddress() , address);
-     console.log("edit", editing ,top,left,height);
+     console.log("editing", editing , editingAddress() , address());
+     //console.log("edit", editing ,top,left,height);
 
      cell = table.getCellByPoint({ y, x }, "SYSTEM");
 
@@ -726,7 +726,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
 
 
 */
-
+ 
   return (
    <For each={key()}>{() =>
     <Fixed
