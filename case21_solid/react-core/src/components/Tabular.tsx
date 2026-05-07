@@ -94,7 +94,7 @@ const [choosing, setChoosing] = createSignal(store().choosing);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
  
-    //console.log("scroll");
+    //console.log("croll");
     if (table) {
       //console.log(virtualize(table, e.currentTarget));
       setVirtualized(virtualize(table, e.currentTarget));
@@ -616,8 +616,10 @@ const [choosing, setChoosing] = createSignal(store().choosing);
       return false;
     }
   };
-  //          console.log("== w",table.headerWidth)
-  //          console.log("== h",table.totalHeight)
+            console.log("== w",table.headerWidth)
+            console.log("== h",table.totalHeight)
+            //table.headerWidth = 2500;
+            table.totalHeight = 499*20/2  ; //TODO
 
   return (
     <>

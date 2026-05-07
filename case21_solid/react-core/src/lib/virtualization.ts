@@ -90,8 +90,8 @@ export const virtualize = (
       //console.log("height", height, "bottom", bottom)
       boundaryBottom = Math.min(y + OVERSCAN_Y, table.getNumRows());
 
+      // TODO
       boundaryBottom   = parseInt(boundaryBottom*2)
-
       if (boundaryBottom  > table.getNumRows()) {
          boundaryBottom   = table.getNumRows();
       }
@@ -100,21 +100,9 @@ export const virtualize = (
     }
   }
 
-      //boundaryTop -= 30;
-      //boundaryBottom += 50;
 
-  //console.log(table.getNumRows());  //TODO
-  //console.log(table.getNumCols());
   const ys = range(boundaryTop, boundaryBottom);
   const xs = range(boundaryLeft, boundaryRight);
-  //const ys = range(1, table.getNumRows());  //TODO
-  //const xs = range(1, table.getNumCols());
-  //const ys = range(1, 100);  //TODO
-  //const xs = range(1, 20);
-  //const ys = range(1, 499);  //TODO
-  //const xs = range(1, 139);
-  //const ys = range(100, 200);  //TODO
-  //const xs = range(1, 50);
  
   console.log(">>", boundaryTop, boundaryBottom, "=", boundaryBottom - boundaryTop);
   //console.log(ys.length)
