@@ -620,6 +620,7 @@ const [choosing, setChoosing] = createSignal(store().choosing);
             console.log("== h",table.totalHeight)
             //table.headerWidth = 2500;
             table.totalHeight = 499*20/2  ; //TODO
+            table.totalHeight = 499*20/1.8; //TODO
 
   return (
     <>

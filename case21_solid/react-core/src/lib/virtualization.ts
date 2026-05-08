@@ -91,12 +91,14 @@ export const virtualize = (
       boundaryBottom = Math.min(y + OVERSCAN_Y, table.getNumRows());
 
       // TODO
+      
       boundaryBottom   = parseInt(boundaryBottom*2)
       if (boundaryBottom  > table.getNumRows()) {
          boundaryBottom   = table.getNumRows();
       }
 
       break;
+
     }
   }
 

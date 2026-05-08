@@ -530,9 +530,11 @@ export class Table implements UserTable {
     });
     this.totalWidth = width + this.headerWidth;
     this.totalHeight = height + this.headerHeight;
+   console.log("totalHeight", this.totalHeight);
   }
 
   public refresh(relocate = false, resize = false): Table {
+   console.log("refresh");
     this.incrementVersion();
     this.lastChangedAt = this.changedAt;
     this.changedAt = new Date();
