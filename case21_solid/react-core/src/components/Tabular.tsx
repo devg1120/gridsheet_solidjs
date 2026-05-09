@@ -57,7 +57,7 @@ const [choosing, setChoosing] = createSignal(store().choosing);
 
  createEffect(() => {
     table = store().tableReactive;
-    console.log(table);
+    //console.log(table);
     setTableKey([{}]);
   });
 /*

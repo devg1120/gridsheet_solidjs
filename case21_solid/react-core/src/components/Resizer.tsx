@@ -192,9 +192,9 @@ export const Resizer = () => {
       <div class={`gs-line-horizontal ${y === -1 ? "gs-hidden" : ""}`}>
         <div
           class={"gs-line"}
-          style={{ width: "100%", height: "1px", top: (endY - offsetY) + "px" }}
+          style={{  width: "100%", height: "1px", top: (endY - offsetY) + "px" }}
         >
-          <span style={{ top: "-50%" }}>{height}px</span>
+          <span style={{  top: "-50%" }}>{height}px</span>
         </div>
       </div>
     </div>
