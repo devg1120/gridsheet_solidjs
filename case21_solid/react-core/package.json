@@ -10,7 +10,7 @@
     "typecheck": "pnpm tsc --noEmit --types jest",
     "less": "lessc --clean-css ./src/styles/root.less ./src/styles/root.min.css",
     "generate-style": "node ./src/generate-style.js",
-    "gen": "node ./src/generate-style.js",
+    "gen": "node ./generate-style.js",
     "jest": "jest"
   },
   "repository": {

@@ -39,12 +39,12 @@
     z-index: 2;
     &:hover {
       background-color: #0077ff;
-      //background-color: red;
     }
     &.gs-protected {
       display: none;
     }
   }
+
 }
 
 .gs-th-inner {
@@ -74,7 +74,7 @@
     cursor: e-resize;
 
     &.gs-dragging {
-      //border-right-style: dotted;
+      border-right-style: dotted;
       height: 1000000px !important;
       cursor: e-resize;
     }
@@ -89,14 +89,11 @@
 
   .gs-resizer {
     left: 0;
-    bottom: 0;
     height: 3px;
     cursor: n-resize;
-    //padding-bottom: -3px;
-    //margin-bottom: -2px;
-    z-index: 900;
+
     &.gs-dragging {
-      //border-bottom-style: dotted;
+      border-bottom-style: dotted;
       width: 1000000px !important;
       cursor: n-resize;
     }
@@ -106,7 +103,7 @@
 .gs-th-top.gs-th-left {
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 3;
   border: none !important;
 }
 
