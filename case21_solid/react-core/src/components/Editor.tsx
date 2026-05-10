@@ -788,8 +788,12 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
           onFocus={handleFocus}
 	  z-index={10009}
           style={{
-            "min-width": width + "px",
-            "min-height": height + "px",
+            //"min-width": width + "px",
+            //"min-height": (height-6) + "px",
+	    "resize": "none",
+	    "border": "0px",
+            "width": (width-4) + "px",
+            "height": (height-4) + "px",
           }}
       //onClick={() => console.log('TextArea Clicked!',x,y)}
       //onDblClick={(e) => console.log('TextArea Double Clicked!',e, x,y)}
