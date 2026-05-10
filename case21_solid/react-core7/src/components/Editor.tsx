@@ -207,8 +207,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
   //let address = `${colId}${rowId}`;
   _setAddress(`${colId}${rowId}`);
   let editing = editingAddress() === address;
-
-  editing = false;
+  editing = true;
 
   let cell = table.getCellByPoint({ y, x }, "SYSTEM");
 
@@ -229,9 +228,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
      //address = `${colId}${rowId}`;
      _setAddress(`${colId}${rowId}`);
 
-     console.log("editingAddress",editingAddress() ,"address", address());
      editing = editingAddress() === address();
-
      //console.log("editing", editing , editingAddress() , address());
      //console.log("edit", editing ,top,left,height);
 
@@ -242,7 +239,6 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
        cell,
        refEvaluation: "RAW",
      });
-      setKey([{}]);
 
   })
 /*
@@ -288,7 +284,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
 
   createEffect(() => {
       //{ y: top, x: left, height, width } = editorRect();
-      console.log("editorRect update", editorRect());
+      //console.log("editorRect update", editorRect());
       const rect = editorRect();
       top = rect.y;
       left = rect.x;
@@ -298,7 +294,6 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
   });
 
   const writeCell = (value: string) => {
-       console.log("writeCell", y, x, value)
     if (before !== value) {
       // console.log("dispatch")
       dispatch(write({ value }));
@@ -364,10 +359,6 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
               writeCell(input.value);
               dispatch(setEditingAddress(""));
               dispatch(setInputting(""));
-	  console.log("===========================")
-	  editing = false;
-      setKey([{}]);
-
             }
           }
         } else if (editingOnEnter && selectingZone.endY === -1) {
@@ -626,7 +617,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
   };
 
   const handleDoubleClick = (e: React.MouseEvent<HTMLTextAreaElement>) => {
-      console.log("Editor handleDoubleClick", editing, e.currentTarget);
+      //console.log("Editor handleDoubleClick");
     if (prevention.hasOperation(cell?.prevention, prevention.Write)) {
       console.warn("This cell is protected from writing.");
       return;
@@ -748,7 +739,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
               height: height + "px",
 	      "z-index": "10000",
             }
-          : {display: "none"}
+          : {}
       }
 
       table={tableRef}
@@ -758,13 +749,10 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
       }}
 
     >
-    {/*
       <div class={`gs-cell-label ${editing ? " gs-hidden" : ""}`}>
         {address()}
       </div>
-      */}
       <div class="gs-editor-inner" style={{ width: width }}>
-      {/*
         <pre
           class="gs-editor-hl"
           style={{
@@ -775,7 +763,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
         >
           {cell?.disableFormula ? inputting() : editorStyle(inputting())}
         </pre>
-*/}
+
         <textarea
           data-sheet-id={sheetId}
           name="gs-editor-input"
@@ -798,7 +786,10 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
       on:myCustomEvent={handleDoubleClick}
 
           //onDoubleClick={handleDoubleClick}
-         onBlur={handleBlur}
+          //onDblClick={handleDoubleClick}
+          //ondblclick={handleDoubleClick}
+          //onClick={handleDoubleClick}
+          //onBlur={handleBlur}
           value={inputting()}
           onChange={handleChange}
           onPaste={handlePaste}

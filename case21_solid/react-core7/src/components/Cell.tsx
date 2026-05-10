@@ -87,7 +87,6 @@ export const Cell: FC<Props> = ({
 
   const _setEditorRect = () => {
     let rect = _cellRef?.getBoundingClientRect();
-    console.log("_setEditorRect",rect)
     if (rect == null) {
       return null;
     }
@@ -109,7 +108,7 @@ export const Cell: FC<Props> = ({
       }),
     );
   };
-/*
+
   createEffect(
     on(
       () => [pointed, editing],
@@ -123,7 +122,7 @@ export const Cell: FC<Props> = ({
       },
     ),
   );
-*/
+
   if (!table) {
     return null;
   }
@@ -159,23 +158,12 @@ export const Cell: FC<Props> = ({
   }
   const input = editorRef;
   const editingAnywhere = !!(table.wire.editingAddress || editingAddress);
-
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
-    console.log("handleDragStart", store().choosing, y,x)
+    //console.log("handleDragStart")
    
     e.stopPropagation();
     safePreventDefault(e);
-    
-    if ( store().choosing.y == y &&
-         store().choosing.x == x) {
 
-              console.log("editing...");
-              //_setEditorRect(); //TODO
-              onDoubleClick(e);
-	      return false;
-	 }
-
-          _setEditorRect(); //TODO
     if (!isTouching(e)) {
       return false;
     }
@@ -234,7 +222,7 @@ export const Cell: FC<Props> = ({
     }
 
     if (editingAnywhere) {
-      //writeCell(input.value);  //TODO
+      writeCell(input.value);
     }
     if (!e.shiftKey) {
       dispatch(choose({ y, x }));
@@ -372,13 +360,13 @@ export const Cell: FC<Props> = ({
   };
 
   const onDoubleClick = (e: React.MouseEvent<HTMLTableCellElement>) => {
-    console.log("handler onDoubleClick");
+    //console.log("handler onDoubleClick");
     e.stopPropagation();
-          _setEditorRect(); //TODO
+          //_setEditorRect(); //TODO
     safePreventDefault(e);
     setEditingAddress(address);
-    //const dblclick = document.createEvent("MouseEvents");
-    //dblclick.initEvent("dblclick", true, false);
+    const dblclick = document.createEvent("MouseEvents");
+    dblclick.initEvent("dblclick", true, false);
 
 const dblclick2 = new MouseEvent('dblclick', {
   bubbles: true,
@@ -459,14 +447,13 @@ const dblclick2 = new MouseEvent('dblclick', {
       data-address={address}
       colSpan={colSpan_size}
       rowSpan={rowSpan_size}
-      onContextMenu={onContextMenu}  //NEW
-      //onDoubleClick={onDoubleClick}  //NEW
+      //onContextMenu={onContextMenu}
+      //onDoubleClick={onDoubleClick}
       
       //onClick={() => console.log('Cell Clicked!',x,y)}
       //onDblClick={() => console.log('Cell Double Clicked!',x,y)}
       //onDblClick={handleDblClick}
-
-      //onClick={handleClick2}
+      onClick={handleClick2}
 
       class={`gs-cell ${
         among(selectingArea, {
@@ -483,10 +470,10 @@ const dblclick2 = new MouseEvent('dblclick', {
       <div
         class={`gs-cell-inner-wrap`}
         // shift-key  abalable               TODO
-        onMouseDown={handleDragStart}   //NEW
-        onTouchStart={handleDragStart}  //NEW
-        onMouseEnter={handleDragging}   //NEW
-        onMouseUp={handleDragEnd}       //NEW
+        //onMouseDown={handleDragStart}
+        //onTouchStart={handleDragStart}
+        //onMouseEnter={handleDragging}
+        //onMouseUp={handleDragEnd}
 	
       >
         <div class={"gs-cell-inner"} style={{}}>

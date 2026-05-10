@@ -87,11 +87,10 @@ export const Cell: FC<Props> = ({
 
   const _setEditorRect = () => {
     let rect = _cellRef?.getBoundingClientRect();
-    console.log("_setEditorRect",rect)
     if (rect == null) {
       return null;
     }
-    //console.log("_setEditorRect", _cellRef, rect)
+    console.log("_setEditorRect", _cellRef, rect)
     dispatch(
       setEditorRect({
      
@@ -109,7 +108,7 @@ export const Cell: FC<Props> = ({
       }),
     );
   };
-/*
+
   createEffect(
     on(
       () => [pointed, editing],
@@ -123,7 +122,7 @@ export const Cell: FC<Props> = ({
       },
     ),
   );
-*/
+
   if (!table) {
     return null;
   }
@@ -159,42 +158,19 @@ export const Cell: FC<Props> = ({
   }
   const input = editorRef;
   const editingAnywhere = !!(table.wire.editingAddress || editingAddress);
-
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
-    console.log("handleDragStart", store().choosing, y,x)
+    //console.log("handleDragStart")
    
     e.stopPropagation();
     safePreventDefault(e);
-    
-    if ( store().choosing.y == y &&
-         store().choosing.x == x) {
 
-              console.log("editing...");
-              //_setEditorRect(); //TODO
-              onDoubleClick(e);
-	      return false;
-	 }
-
-          _setEditorRect(); //TODO
     if (!isTouching(e)) {
       return false;
     }
     if (!input) {
       return false;
     }
-/*
-    if (!e.shiftKey) {
-      //_setEditorRect(); //TODO
-      //dispatch(choose({ y, x }));
-      if (pointed && !isFirstPointed) {
-          _setEditorRect(); //TODO
-          onDoubleClick(e);
-      } else {
-      _setEditorRect(); //TODO
-      isFirstPointed = false;
-      }
-    }
-*/
+
     // Single cell selection only for touch events
     if (e.type.startsWith("touch")) {
       // Blur the input field to commit current value when selecting via touch
@@ -234,7 +210,7 @@ export const Cell: FC<Props> = ({
     }
 
     if (editingAnywhere) {
-      //writeCell(input.value);  //TODO
+      writeCell(input.value);
     }
     if (!e.shiftKey) {
       dispatch(choose({ y, x }));
@@ -242,27 +218,6 @@ export const Cell: FC<Props> = ({
     return true;
   };
 
-
-  const handleClick2 = (e: React.MouseEvent | React.TouchEvent) => {
-    console.log("handleClick2")
-   
-    e.stopPropagation();
-    safePreventDefault(e);
-
-    if (!e.shiftKey) {
-      //_setEditorRect(); //TODO
-      //dispatch(choose({ y, x }));
-      if (pointed && !isFirstPointed) {
-           _setEditorRect(); //TODO
-          onDoubleClick(e);
-      } else {
-      _setEditorRect(); //TODO
-      dispatch(choose({ y, x }));
-       //isFirstPointed = false;
-      }
-    }
-    return true;
-  };
 
   const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
     console.log("handleClick")
@@ -271,12 +226,16 @@ export const Cell: FC<Props> = ({
     safePreventDefault(e);
 
     if (!e.shiftKey) {
+      //_setEditorRect(); //TODO
+      //dispatch(choose({ y, x }));
+      if (pointed && !isFirstPointed) {
+          onDoubleClick(e);
+      } else {
       _setEditorRect(); //TODO
       dispatch(choose({ y, x }));
-      //_setEditorRect(); //TODO
-      onDoubleClick(e);
 
       }
+    }
     return true;
   };
 
@@ -372,13 +331,13 @@ export const Cell: FC<Props> = ({
   };
 
   const onDoubleClick = (e: React.MouseEvent<HTMLTableCellElement>) => {
-    console.log("handler onDoubleClick");
+    //console.log("handler onDoubleClick");
     e.stopPropagation();
-          _setEditorRect(); //TODO
+          //_setEditorRect(); //TODO
     safePreventDefault(e);
     setEditingAddress(address);
-    //const dblclick = document.createEvent("MouseEvents");
-    //dblclick.initEvent("dblclick", true, false);
+    const dblclick = document.createEvent("MouseEvents");
+    dblclick.initEvent("dblclick", true, false);
 
 const dblclick2 = new MouseEvent('dblclick', {
   bubbles: true,
@@ -459,14 +418,13 @@ const dblclick2 = new MouseEvent('dblclick', {
       data-address={address}
       colSpan={colSpan_size}
       rowSpan={rowSpan_size}
-      onContextMenu={onContextMenu}  //NEW
-      //onDoubleClick={onDoubleClick}  //NEW
+      //onContextMenu={onContextMenu}
+      //onDoubleClick={onDoubleClick}
       
       //onClick={() => console.log('Cell Clicked!',x,y)}
       //onDblClick={() => console.log('Cell Double Clicked!',x,y)}
       //onDblClick={handleDblClick}
-
-      //onClick={handleClick2}
+      onClick={handleClick}
 
       class={`gs-cell ${
         among(selectingArea, {
@@ -476,17 +434,17 @@ const dblclick2 = new MouseEvent('dblclick', {
           ? "gs-selecting"
           : ""
       } ${pointed ? "gs-choosing" : ""} ${
-        editing ? "gs-editing_" : ""
+        editing ? "gs-editing" : ""
       } ${freeze_y ? "freeze_y" : ""}  ${freeze_x ? "freeze_x" : ""} `}
       style={mergeProps(() => cell?.style, operationStyle, freezeStyle) }
     >
       <div
         class={`gs-cell-inner-wrap`}
         // shift-key  abalable               TODO
-        onMouseDown={handleDragStart}   //NEW
-        onTouchStart={handleDragStart}  //NEW
-        onMouseEnter={handleDragging}   //NEW
-        onMouseUp={handleDragEnd}       //NEW
+        //onMouseDown={handleDragStart}
+        //onTouchStart={handleDragStart}
+        //onMouseEnter={handleDragging}
+        //onMouseUp={handleDragEnd}
 	
       >
         <div class={"gs-cell-inner"} style={{}}>
