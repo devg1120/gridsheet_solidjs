@@ -62,6 +62,7 @@ export const HeaderCellLeft: FC<Props> = memo(({ y, isFreeze }) => {
   );
 
   const handleResizeMouseDown = useCallback((e: React.MouseEvent) => {
+    console.log("handleResizeMouseDown")
     dispatch(setResizingPositionY([y, e.clientY, e.clientY]));
     e.stopPropagation();
     safePreventDefault(e);

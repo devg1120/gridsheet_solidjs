@@ -90,6 +90,7 @@ export const Resizer = () => {
     editorRef.current!.focus();
   };
   const handleResizeMove = (e: MouseEvent) => {
+    console.log("ResizeMove");
     if (y !== -1) {
       let endY = e.clientY;
       const height = baseHeight + (endY - startY);
