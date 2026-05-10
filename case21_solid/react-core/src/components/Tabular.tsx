@@ -2,7 +2,7 @@ import { Cell } from "./Cell";
 import { HeaderCellTop } from "./HeaderCellTop";
 import { HeaderCellLeft } from "./HeaderCellLeft";
 import { Context } from "../store";
-import { choose, select } from "../store/actions";
+import { choose, select, setEditingAddress } from "../store/actions";
 import {
   RefPaletteType,
   PointType,
@@ -102,6 +102,8 @@ const [choosing, setChoosing] = createSignal(store().choosing);
  
     //console.log("croll");
     if (table) {
+      //dispatch(choose({ y: -1, x: -1 }));
+      dispatch(setEditingAddress(""));
       //console.log(virtualize(table, e.currentTarget));
       setVirtualized(virtualize(table, e.currentTarget));
     }
