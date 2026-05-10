@@ -95,7 +95,8 @@ export const Cell: FC<Props> = ({
     dispatch(
       setEditorRect({
      
-        y: rect.y + 30,
+        //y: rect.y + 30,
+        y: rect.y ,
         x: rect.x,
         height: rect.height,
         width: rect.width,
@@ -161,7 +162,7 @@ export const Cell: FC<Props> = ({
   const editingAnywhere = !!(table.wire.editingAddress || editingAddress);
 
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
-    console.log("handleDragStart", store().choosing, y,x)
+    //console.log("handleDragStart", store().choosing, y,x)
    
     e.stopPropagation();
     safePreventDefault(e);
@@ -169,7 +170,7 @@ export const Cell: FC<Props> = ({
     if ( store().choosing.y == y &&
          store().choosing.x == x) {
 
-              console.log("editing...");
+              //console.log("editing...");
               //_setEditorRect(); //TODO
               onDoubleClick(e);
 	      return false;
@@ -244,7 +245,7 @@ export const Cell: FC<Props> = ({
 
 
   const handleClick2 = (e: React.MouseEvent | React.TouchEvent) => {
-    console.log("handleClick2")
+    //console.log("handleClick2")
    
     e.stopPropagation();
     safePreventDefault(e);
@@ -265,7 +266,7 @@ export const Cell: FC<Props> = ({
   };
 
   const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
-    console.log("handleClick")
+    //console.log("handleClick")
    
     e.stopPropagation();
     safePreventDefault(e);
@@ -281,7 +282,7 @@ export const Cell: FC<Props> = ({
   };
 
   const handleDblClick = (e: React.MouseEvent | React.TouchEvent) => {
-    console.log("handleDblClick")
+    //console.log("handleDblClick")
    
     e.stopPropagation();
     safePreventDefault(e);

@@ -343,7 +343,6 @@ export class Table implements UserTable {
     if (this.status > 1) {
       return;
     }
-    console.log("table.initialize !!!");
     if (cells[0] == null) {
       cells[0] = { width: HEADER_WIDTH, height: HEADER_HEIGHT };
     } else if (!cells[0].height) {
@@ -516,7 +515,6 @@ export class Table implements UserTable {
     });
     this.totalWidth = width + this.headerWidth;
     this.totalHeight = height + this.headerHeight;
-    console.log("totalHeight",this.totalHeight);
   }
 
   public refresh(relocate = false, resize = false): Table {

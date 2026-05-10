@@ -32,9 +32,9 @@ const App  = () => {
             console.log(`Table initialized: ${table.sheetName}`);
         },
     };
-    console.log(hubProps);
+    //console.log(hubProps);
     const hub = useHub(hubProps);
-    console.log("hub", hub)
+    //console.log("hub", hub)
 
     createEffect(on(
         () => [enableDecimalLabeler()],
@@ -47,7 +47,7 @@ const App  = () => {
     ));
 
     let cells: CellsByAddressType = {};
-    console.log("Table max col:", colNumToId(139));
+    //console.log("Table max col:", colNumToId(139));
     for (let rowNum = 1; rowNum < 200; rowNum++) {
         for (let colNum = 1; colNum < 100; colNum++) {
             const columnName = colNumToId(colNum);

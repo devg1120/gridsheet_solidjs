@@ -229,7 +229,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
      //address = `${colId}${rowId}`;
      _setAddress(`${colId}${rowId}`);
 
-     console.log("editingAddress",editingAddress() ,"address", address());
+     //console.log("editingAddress",editingAddress() ,"address", address());
      editing = editingAddress() === address();
 
      //console.log("editing", editing , editingAddress() , address());
@@ -298,7 +298,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
   });
 
   const writeCell = (value: string) => {
-       console.log("writeCell", y, x, value)
+       //console.log("writeCell", y, x, value)
     if (before !== value) {
       // console.log("dispatch")
       dispatch(write({ value }));
@@ -364,7 +364,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
               writeCell(input.value);
               dispatch(setEditingAddress(""));
               dispatch(setInputting(""));
-	  console.log("===========================")
+	  //console.log("===========================")
 	  editing = false;
       setKey([{}]);
 
@@ -626,7 +626,7 @@ export const Editor: Component<Props> = ({ mode }: Props) => {
   };
 
   const handleDoubleClick = (e: React.MouseEvent<HTMLTextAreaElement>) => {
-      console.log("Editor handleDoubleClick", editing, e.currentTarget);
+      //console.log("Editor handleDoubleClick", editing, e.currentTarget);
     if (prevention.hasOperation(cell?.prevention, prevention.Write)) {
       console.warn("This cell is protected from writing.");
       return;

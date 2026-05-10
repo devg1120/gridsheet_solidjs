@@ -181,7 +181,7 @@ export function GridSheetPassive({
 
   onMount(() => {
     embedStyle();
-    console.log(mainRef);
+    //console.log(mainRef);
      dispatch(setStore({ mainRef: mainRef }))
      setLoading(false);
 

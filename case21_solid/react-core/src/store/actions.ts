@@ -110,7 +110,7 @@ export const setSearchCaseSensitive = new SetSearchCaseSensitiveAction().bind();
 
 class SetEditingAddressAction<T extends string> extends CoreAction<T> {
   reduce(store: StoreType, payload: T): StoreWithCallback {
-	  console.log("setEdittingAddress",payload)
+//	  console.log("setEdittingAddress",payload)
     return {
       ...store,
       editingAddress: payload,
@@ -211,7 +211,7 @@ export const updateTable = new UpdateTableAction().bind();
 
 class SetEditorRectAction<T extends RectType> extends CoreAction<T> {
   reduce(store: StoreType, payload: T): StoreWithCallback {
-	  console.log("setEditorRect",payload)
+//	  console.log("setEditorRect",payload)
     return {
       ...store,
       editorRect: payload,
@@ -584,8 +584,8 @@ class WriteAction<
     if (point == null) {
       point = choosing;
     }
-	console.trace("WriteAction", point, value);
-	console.log("WriteAction", point, value);
+	//console.trace("WriteAction", point, value);
+	//console.log("WriteAction", point, value);
     const table = tableRef;
     if (!table) {
       return store;
